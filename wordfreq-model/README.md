@@ -10,3 +10,10 @@ $ cd wordfreq-orig
 $ git checkout v3.0.2
 $ cd ..
 ```
+
+```shell
+$ python -m venv venv
+$ source ./venv/bin/activate
+$ pip install -r scripts/requirements.txt
+$ scripts/compile_all.sh
+```
