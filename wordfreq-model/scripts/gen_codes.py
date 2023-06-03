@@ -14,7 +14,7 @@ for filename in filenames:
     targets.append((wordlist, lang))
 
 cargo_toml = '''[package]
-name = "wordfreq-data"
+name = "wordfreq-model"
 version = "0.1.0"
 edition = "2021"
 

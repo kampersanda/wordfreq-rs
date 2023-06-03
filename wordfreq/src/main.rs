@@ -1,4 +1,4 @@
 fn main() {
-    let wf = wordfreq_data::load_wordfreq(wordfreq_data::ModelKind::LargeEn).unwrap();
+    let wf = wordfreq_model::load_wordfreq(wordfreq_model::ModelKind::LargeEn).unwrap();
     println!("{}", wf.get("the"));
 }
