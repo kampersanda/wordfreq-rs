@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 wordfreq-core = { path = "../wordfreq-core" }
-wordfreq-data = { path = "../wordfreq-data" }
+wordfreq-model = { path = "../wordfreq-model" }
