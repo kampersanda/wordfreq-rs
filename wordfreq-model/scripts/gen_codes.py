@@ -1,10 +1,10 @@
 from glob import glob
 import re
 
-filenames = glob('resources/*.txt')
+filenames = glob('resources/*.txt.gz')
 filenames.sort()
 
-matcher = re.compile(r'^resources\/(?P<wordlist>.+?)_(?P<lang>.+?)\.txt$')
+matcher = re.compile(r'^resources\/(?P<wordlist>.+?)_(?P<lang>.+?)\.txt\.gz$')
 
 targets = []
 for filename in filenames:

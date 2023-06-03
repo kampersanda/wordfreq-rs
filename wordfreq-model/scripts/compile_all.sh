@@ -70,7 +70,7 @@ targets=(
     "small_zh"
 )
 
-output_dir="output"
+output_dir="resources"
 mkdir ${output_dir}
 
 for target in "${targets[@]}" ; do
