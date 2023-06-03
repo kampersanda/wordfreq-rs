@@ -84,11 +84,16 @@ lib_rs = '''use std::env;
 use anyhow::{{anyhow, Result}};
 use wordfreq_core::WordFreq;
 
+pub enum ModelKind {{
+{model_kind_block}
+}}
+
 {const_block}
 
-pub fn load_wordfreq(lang: &str, wordlist: &str) -> Result<WordFreq> {{
-{if_block}
-\tErr(anyhow!("Unknown language or wordlist: {{lang}}-{{wordlist}}"))
+pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
+\tmatch kind {{
+{match_block}
+}}
 }}
 '''
 
@@ -97,10 +102,12 @@ with open('src/lib.rs', 'wt') as f:
     for wordlist, lang in targets:
         const_block.append(f'#[cfg(feature = "{wordlist}-{lang}")]')
         const_block.append(f'const DATA_{wordlist.upper()}_{lang.upper()}: &\'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/{wordlist}_{lang}.bin"));')
-    if_block = []
+    model_kind_block = []
     for wordlist, lang in targets:
-        if_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
-        if_block.append(f'\tif lang == "{lang}" && wordlist == "{wordlist}" {{')
-        if_block.append(f'\t\treturn Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?);')
-        if_block.append('\t}')
-    f.write(lib_rs.format(const_block='\n'.join(const_block), if_block='\n'.join(if_block)))
+        model_kind_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
+        model_kind_block.append(f'\t{wordlist.upper()}_{lang.upper()},')
+    match_block = []
+    for wordlist, lang in targets:
+        match_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
+        match_block.append(f'\t\tModelKind::{wordlist.upper()}_{lang.upper()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),')
+    f.write(lib_rs.format(model_kind_block='\n'.join(model_kind_block), const_block='\n'.join(const_block), match_block='\n'.join(match_block)))
