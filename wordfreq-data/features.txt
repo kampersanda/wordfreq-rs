@@ -1,13 +1,3 @@
-[package]
-name = "wordfreq-data"
-version = "0.1.0"
-edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[features]
-default = ["large-en"]
-
 large-ar = []
 large-bn = []
 large-ca = []
@@ -71,10 +61,3 @@ small-uk = []
 small-ur = []
 small-vi = []
 small-zh = []
-
-[dependencies]
-anyhow = "1.0"
-wordfreq-core = { path = "../wordfreq-core" }
-
-[build-dependencies]
-wordfreq-core = { path = "../wordfreq-core" }
