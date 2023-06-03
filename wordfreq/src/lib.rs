@@ -31,11 +31,30 @@ impl WordFreq {
         Self { map }
     }
 
-    pub fn get<W>(&self, word: W) -> f32
+    pub fn word_frequency<W>(&self, word: W) -> f32
     where
         W: AsRef<str>,
     {
         self.map.get(word.as_ref()).cloned().unwrap_or(0.)
+    }
+
+    /// Returns the probability for an input word.
+    pub fn zipf_frequency<W>(&self, word: W) -> f32
+    where
+        W: AsRef<str>,
+    {
+        let freq = self.word_frequency(word);
+        let zipf = Self::freq_to_zipf(freq);
+        Self::round(zipf, 2)
+    }
+
+    fn freq_to_zipf(freq: f32) -> f32 {
+        freq.log10() + 9.
+    }
+
+    fn round(x: f32, places: i32) -> f32 {
+        let multiplier = 10f32.powi(places);
+        (x * multiplier).round() / multiplier
     }
 
     pub fn serialize(&self) -> Result<Vec<u8>> {
