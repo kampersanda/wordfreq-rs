@@ -81,7 +81,7 @@ with open('build.rs', 'wt') as f:
 
 lib_rs = '''use std::env;
 
-use anyhow::{{anyhow, Result}};
+use anyhow::Result;
 use wordfreq_core::WordFreq;
 
 pub enum ModelKind {{
@@ -105,9 +105,9 @@ with open('src/lib.rs', 'wt') as f:
     model_kind_block = []
     for wordlist, lang in targets:
         model_kind_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
-        model_kind_block.append(f'\t{wordlist.upper()}_{lang.upper()},')
+        model_kind_block.append(f'\t{wordlist.capitalize()}{lang.capitalize()},')
     match_block = []
     for wordlist, lang in targets:
         match_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
-        match_block.append(f'\t\tModelKind::{wordlist.upper()}_{lang.upper()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),')
+        match_block.append(f'\t\tModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),')
     f.write(lib_rs.format(model_kind_block='\n'.join(model_kind_block), const_block='\n'.join(const_block), match_block='\n'.join(match_block)))
