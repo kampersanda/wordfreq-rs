@@ -4,15 +4,16 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::Path;
 
+use flate2::read::GzDecoder;
 use wordfreq::WordFreq;
 
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let build_dir = env::var_os("OUT_DIR").unwrap();
 
     let resources_dir_path = Path::new("resources");
-    let input_file_path = resources_dir_path.join(file_base).with_extension("txt");
+    let input_file_path = resources_dir_path.join(file_base).with_extension("txt.gz");
 
-    let reader = BufReader::new(File::open(input_file_path)?);
+    let reader = BufReader::new(GzDecoder::new(File::open(input_file_path)?));
     let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
     let model = wf.serialize()?;
 
