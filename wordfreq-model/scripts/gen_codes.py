@@ -75,11 +75,11 @@ fn main() -> Result<(), Box<dyn Error>> {{
 with open('build.rs', 'wt') as f:
     main_block = []
     for wordlist, lang in targets:
-        main_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
-        main_block.append(f'\tbuild("{wordlist}_{lang}")?;')
+        main_block.append(f'    #[cfg(feature = "{wordlist}-{lang}")]')
+        main_block.append(f'    build("{wordlist}_{lang}")?;')
     f.write(build_rs.format(main_block='\n'.join(main_block)))
 
-lib_rs = '''use std::env;
+model_rs = '''use std::env;
 
 use anyhow::Result;
 use wordfreq_core::WordFreq;
@@ -91,23 +91,33 @@ pub enum ModelKind {{
 {const_block}
 
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
-\tmatch kind {{
+    match kind {{
 {match_block}
-\t}}
+    }}
 }}
 '''
 
-with open('src/lib.rs', 'wt') as f:
+with open('src/model.rs', 'wt') as f:
     const_block = []
     for wordlist, lang in targets:
         const_block.append(f'#[cfg(feature = "{wordlist}-{lang}")]')
-        const_block.append(f'const DATA_{wordlist.upper()}_{lang.upper()}: &\'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/{wordlist}_{lang}.bin"));')
+        const_block.append(
+            f'const DATA_{wordlist.upper()}_{lang.upper()}: &\'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/{wordlist}_{lang}.bin"));'
+        )
     model_kind_block = []
     for wordlist, lang in targets:
-        model_kind_block.append(f'\t#[cfg(feature = "{wordlist}-{lang}")]')
-        model_kind_block.append(f'\t{wordlist.capitalize()}{lang.capitalize()},')
+        model_kind_block.append(f'    #[cfg(feature = "{wordlist}-{lang}")]')
+        model_kind_block.append(f'    {wordlist.capitalize()}{lang.capitalize()},')
     match_block = []
     for wordlist, lang in targets:
-        match_block.append(f'\t\t#[cfg(feature = "{wordlist}-{lang}")]')
-        match_block.append(f'\t\tModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),')
-    f.write(lib_rs.format(model_kind_block='\n'.join(model_kind_block), const_block='\n'.join(const_block), match_block='\n'.join(match_block)))
+        match_block.append(f'        #[cfg(feature = "{wordlist}-{lang}")]')
+        match_block.append(
+            f'        ModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),'
+        )
+    f.write(
+        model_rs.format(
+            model_kind_block='\n'.join(model_kind_block),
+            const_block='\n'.join(const_block),
+            match_block='\n'.join(match_block),
+        )
+    )
