@@ -93,7 +93,7 @@ pub enum ModelKind {{
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
 \tmatch kind {{
 {match_block}
-}}
+\t}}
 }}
 '''
 

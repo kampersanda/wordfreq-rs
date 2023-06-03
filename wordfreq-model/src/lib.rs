@@ -4,132 +4,132 @@ use anyhow::Result;
 use wordfreq_core::WordFreq;
 
 pub enum ModelKind {
-	#[cfg(feature = "large-ar")]
-	LargeAr,
-	#[cfg(feature = "large-bn")]
-	LargeBn,
-	#[cfg(feature = "large-ca")]
-	LargeCa,
-	#[cfg(feature = "large-cs")]
-	LargeCs,
-	#[cfg(feature = "large-de")]
-	LargeDe,
-	#[cfg(feature = "large-en")]
-	LargeEn,
-	#[cfg(feature = "large-es")]
-	LargeEs,
-	#[cfg(feature = "large-fi")]
-	LargeFi,
-	#[cfg(feature = "large-fr")]
-	LargeFr,
-	#[cfg(feature = "large-he")]
-	LargeHe,
-	#[cfg(feature = "large-it")]
-	LargeIt,
-	#[cfg(feature = "large-ja")]
-	LargeJa,
-	#[cfg(feature = "large-mk")]
-	LargeMk,
-	#[cfg(feature = "large-nb")]
-	LargeNb,
-	#[cfg(feature = "large-nl")]
-	LargeNl,
-	#[cfg(feature = "large-pl")]
-	LargePl,
-	#[cfg(feature = "large-pt")]
-	LargePt,
-	#[cfg(feature = "large-ru")]
-	LargeRu,
-	#[cfg(feature = "large-sv")]
-	LargeSv,
-	#[cfg(feature = "large-uk")]
-	LargeUk,
-	#[cfg(feature = "large-zh")]
-	LargeZh,
-	#[cfg(feature = "small-ar")]
-	SmallAr,
-	#[cfg(feature = "small-bg")]
-	SmallBg,
-	#[cfg(feature = "small-bn")]
-	SmallBn,
-	#[cfg(feature = "small-ca")]
-	SmallCa,
-	#[cfg(feature = "small-cs")]
-	SmallCs,
-	#[cfg(feature = "small-da")]
-	SmallDa,
-	#[cfg(feature = "small-de")]
-	SmallDe,
-	#[cfg(feature = "small-el")]
-	SmallEl,
-	#[cfg(feature = "small-en")]
-	SmallEn,
-	#[cfg(feature = "small-es")]
-	SmallEs,
-	#[cfg(feature = "small-fa")]
-	SmallFa,
-	#[cfg(feature = "small-fi")]
-	SmallFi,
-	#[cfg(feature = "small-fil")]
-	SmallFil,
-	#[cfg(feature = "small-fr")]
-	SmallFr,
-	#[cfg(feature = "small-he")]
-	SmallHe,
-	#[cfg(feature = "small-hi")]
-	SmallHi,
-	#[cfg(feature = "small-hu")]
-	SmallHu,
-	#[cfg(feature = "small-id")]
-	SmallId,
-	#[cfg(feature = "small-is")]
-	SmallIs,
-	#[cfg(feature = "small-it")]
-	SmallIt,
-	#[cfg(feature = "small-ja")]
-	SmallJa,
-	#[cfg(feature = "small-ko")]
-	SmallKo,
-	#[cfg(feature = "small-lt")]
-	SmallLt,
-	#[cfg(feature = "small-lv")]
-	SmallLv,
-	#[cfg(feature = "small-mk")]
-	SmallMk,
-	#[cfg(feature = "small-ms")]
-	SmallMs,
-	#[cfg(feature = "small-nb")]
-	SmallNb,
-	#[cfg(feature = "small-nl")]
-	SmallNl,
-	#[cfg(feature = "small-pl")]
-	SmallPl,
-	#[cfg(feature = "small-pt")]
-	SmallPt,
-	#[cfg(feature = "small-ro")]
-	SmallRo,
-	#[cfg(feature = "small-ru")]
-	SmallRu,
-	#[cfg(feature = "small-sh")]
-	SmallSh,
-	#[cfg(feature = "small-sk")]
-	SmallSk,
-	#[cfg(feature = "small-sl")]
-	SmallSl,
-	#[cfg(feature = "small-sv")]
-	SmallSv,
-	#[cfg(feature = "small-ta")]
-	SmallTa,
-	#[cfg(feature = "small-tr")]
-	SmallTr,
-	#[cfg(feature = "small-uk")]
-	SmallUk,
-	#[cfg(feature = "small-ur")]
-	SmallUr,
-	#[cfg(feature = "small-vi")]
-	SmallVi,
-	#[cfg(feature = "small-zh")]
-	SmallZh,
+    #[cfg(feature = "large-ar")]
+    LargeAr,
+    #[cfg(feature = "large-bn")]
+    LargeBn,
+    #[cfg(feature = "large-ca")]
+    LargeCa,
+    #[cfg(feature = "large-cs")]
+    LargeCs,
+    #[cfg(feature = "large-de")]
+    LargeDe,
+    #[cfg(feature = "large-en")]
+    LargeEn,
+    #[cfg(feature = "large-es")]
+    LargeEs,
+    #[cfg(feature = "large-fi")]
+    LargeFi,
+    #[cfg(feature = "large-fr")]
+    LargeFr,
+    #[cfg(feature = "large-he")]
+    LargeHe,
+    #[cfg(feature = "large-it")]
+    LargeIt,
+    #[cfg(feature = "large-ja")]
+    LargeJa,
+    #[cfg(feature = "large-mk")]
+    LargeMk,
+    #[cfg(feature = "large-nb")]
+    LargeNb,
+    #[cfg(feature = "large-nl")]
+    LargeNl,
+    #[cfg(feature = "large-pl")]
+    LargePl,
+    #[cfg(feature = "large-pt")]
+    LargePt,
+    #[cfg(feature = "large-ru")]
+    LargeRu,
+    #[cfg(feature = "large-sv")]
+    LargeSv,
+    #[cfg(feature = "large-uk")]
+    LargeUk,
+    #[cfg(feature = "large-zh")]
+    LargeZh,
+    #[cfg(feature = "small-ar")]
+    SmallAr,
+    #[cfg(feature = "small-bg")]
+    SmallBg,
+    #[cfg(feature = "small-bn")]
+    SmallBn,
+    #[cfg(feature = "small-ca")]
+    SmallCa,
+    #[cfg(feature = "small-cs")]
+    SmallCs,
+    #[cfg(feature = "small-da")]
+    SmallDa,
+    #[cfg(feature = "small-de")]
+    SmallDe,
+    #[cfg(feature = "small-el")]
+    SmallEl,
+    #[cfg(feature = "small-en")]
+    SmallEn,
+    #[cfg(feature = "small-es")]
+    SmallEs,
+    #[cfg(feature = "small-fa")]
+    SmallFa,
+    #[cfg(feature = "small-fi")]
+    SmallFi,
+    #[cfg(feature = "small-fil")]
+    SmallFil,
+    #[cfg(feature = "small-fr")]
+    SmallFr,
+    #[cfg(feature = "small-he")]
+    SmallHe,
+    #[cfg(feature = "small-hi")]
+    SmallHi,
+    #[cfg(feature = "small-hu")]
+    SmallHu,
+    #[cfg(feature = "small-id")]
+    SmallId,
+    #[cfg(feature = "small-is")]
+    SmallIs,
+    #[cfg(feature = "small-it")]
+    SmallIt,
+    #[cfg(feature = "small-ja")]
+    SmallJa,
+    #[cfg(feature = "small-ko")]
+    SmallKo,
+    #[cfg(feature = "small-lt")]
+    SmallLt,
+    #[cfg(feature = "small-lv")]
+    SmallLv,
+    #[cfg(feature = "small-mk")]
+    SmallMk,
+    #[cfg(feature = "small-ms")]
+    SmallMs,
+    #[cfg(feature = "small-nb")]
+    SmallNb,
+    #[cfg(feature = "small-nl")]
+    SmallNl,
+    #[cfg(feature = "small-pl")]
+    SmallPl,
+    #[cfg(feature = "small-pt")]
+    SmallPt,
+    #[cfg(feature = "small-ro")]
+    SmallRo,
+    #[cfg(feature = "small-ru")]
+    SmallRu,
+    #[cfg(feature = "small-sh")]
+    SmallSh,
+    #[cfg(feature = "small-sk")]
+    SmallSk,
+    #[cfg(feature = "small-sl")]
+    SmallSl,
+    #[cfg(feature = "small-sv")]
+    SmallSv,
+    #[cfg(feature = "small-ta")]
+    SmallTa,
+    #[cfg(feature = "small-tr")]
+    SmallTr,
+    #[cfg(feature = "small-uk")]
+    SmallUk,
+    #[cfg(feature = "small-ur")]
+    SmallUr,
+    #[cfg(feature = "small-vi")]
+    SmallVi,
+    #[cfg(feature = "small-zh")]
+    SmallZh,
 }
 
 #[cfg(feature = "large-ar")]
@@ -260,132 +260,132 @@ const DATA_SMALL_VI: &'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/s
 const DATA_SMALL_ZH: &'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_zh.bin"));
 
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {
-	match kind {
-		#[cfg(feature = "large-ar")]
-		ModelKind::LargeAr => Ok(WordFreq::deserialize(DATA_LARGE_AR)?),
-		#[cfg(feature = "large-bn")]
-		ModelKind::LargeBn => Ok(WordFreq::deserialize(DATA_LARGE_BN)?),
-		#[cfg(feature = "large-ca")]
-		ModelKind::LargeCa => Ok(WordFreq::deserialize(DATA_LARGE_CA)?),
-		#[cfg(feature = "large-cs")]
-		ModelKind::LargeCs => Ok(WordFreq::deserialize(DATA_LARGE_CS)?),
-		#[cfg(feature = "large-de")]
-		ModelKind::LargeDe => Ok(WordFreq::deserialize(DATA_LARGE_DE)?),
-		#[cfg(feature = "large-en")]
-		ModelKind::LargeEn => Ok(WordFreq::deserialize(DATA_LARGE_EN)?),
-		#[cfg(feature = "large-es")]
-		ModelKind::LargeEs => Ok(WordFreq::deserialize(DATA_LARGE_ES)?),
-		#[cfg(feature = "large-fi")]
-		ModelKind::LargeFi => Ok(WordFreq::deserialize(DATA_LARGE_FI)?),
-		#[cfg(feature = "large-fr")]
-		ModelKind::LargeFr => Ok(WordFreq::deserialize(DATA_LARGE_FR)?),
-		#[cfg(feature = "large-he")]
-		ModelKind::LargeHe => Ok(WordFreq::deserialize(DATA_LARGE_HE)?),
-		#[cfg(feature = "large-it")]
-		ModelKind::LargeIt => Ok(WordFreq::deserialize(DATA_LARGE_IT)?),
-		#[cfg(feature = "large-ja")]
-		ModelKind::LargeJa => Ok(WordFreq::deserialize(DATA_LARGE_JA)?),
-		#[cfg(feature = "large-mk")]
-		ModelKind::LargeMk => Ok(WordFreq::deserialize(DATA_LARGE_MK)?),
-		#[cfg(feature = "large-nb")]
-		ModelKind::LargeNb => Ok(WordFreq::deserialize(DATA_LARGE_NB)?),
-		#[cfg(feature = "large-nl")]
-		ModelKind::LargeNl => Ok(WordFreq::deserialize(DATA_LARGE_NL)?),
-		#[cfg(feature = "large-pl")]
-		ModelKind::LargePl => Ok(WordFreq::deserialize(DATA_LARGE_PL)?),
-		#[cfg(feature = "large-pt")]
-		ModelKind::LargePt => Ok(WordFreq::deserialize(DATA_LARGE_PT)?),
-		#[cfg(feature = "large-ru")]
-		ModelKind::LargeRu => Ok(WordFreq::deserialize(DATA_LARGE_RU)?),
-		#[cfg(feature = "large-sv")]
-		ModelKind::LargeSv => Ok(WordFreq::deserialize(DATA_LARGE_SV)?),
-		#[cfg(feature = "large-uk")]
-		ModelKind::LargeUk => Ok(WordFreq::deserialize(DATA_LARGE_UK)?),
-		#[cfg(feature = "large-zh")]
-		ModelKind::LargeZh => Ok(WordFreq::deserialize(DATA_LARGE_ZH)?),
-		#[cfg(feature = "small-ar")]
-		ModelKind::SmallAr => Ok(WordFreq::deserialize(DATA_SMALL_AR)?),
-		#[cfg(feature = "small-bg")]
-		ModelKind::SmallBg => Ok(WordFreq::deserialize(DATA_SMALL_BG)?),
-		#[cfg(feature = "small-bn")]
-		ModelKind::SmallBn => Ok(WordFreq::deserialize(DATA_SMALL_BN)?),
-		#[cfg(feature = "small-ca")]
-		ModelKind::SmallCa => Ok(WordFreq::deserialize(DATA_SMALL_CA)?),
-		#[cfg(feature = "small-cs")]
-		ModelKind::SmallCs => Ok(WordFreq::deserialize(DATA_SMALL_CS)?),
-		#[cfg(feature = "small-da")]
-		ModelKind::SmallDa => Ok(WordFreq::deserialize(DATA_SMALL_DA)?),
-		#[cfg(feature = "small-de")]
-		ModelKind::SmallDe => Ok(WordFreq::deserialize(DATA_SMALL_DE)?),
-		#[cfg(feature = "small-el")]
-		ModelKind::SmallEl => Ok(WordFreq::deserialize(DATA_SMALL_EL)?),
-		#[cfg(feature = "small-en")]
-		ModelKind::SmallEn => Ok(WordFreq::deserialize(DATA_SMALL_EN)?),
-		#[cfg(feature = "small-es")]
-		ModelKind::SmallEs => Ok(WordFreq::deserialize(DATA_SMALL_ES)?),
-		#[cfg(feature = "small-fa")]
-		ModelKind::SmallFa => Ok(WordFreq::deserialize(DATA_SMALL_FA)?),
-		#[cfg(feature = "small-fi")]
-		ModelKind::SmallFi => Ok(WordFreq::deserialize(DATA_SMALL_FI)?),
-		#[cfg(feature = "small-fil")]
-		ModelKind::SmallFil => Ok(WordFreq::deserialize(DATA_SMALL_FIL)?),
-		#[cfg(feature = "small-fr")]
-		ModelKind::SmallFr => Ok(WordFreq::deserialize(DATA_SMALL_FR)?),
-		#[cfg(feature = "small-he")]
-		ModelKind::SmallHe => Ok(WordFreq::deserialize(DATA_SMALL_HE)?),
-		#[cfg(feature = "small-hi")]
-		ModelKind::SmallHi => Ok(WordFreq::deserialize(DATA_SMALL_HI)?),
-		#[cfg(feature = "small-hu")]
-		ModelKind::SmallHu => Ok(WordFreq::deserialize(DATA_SMALL_HU)?),
-		#[cfg(feature = "small-id")]
-		ModelKind::SmallId => Ok(WordFreq::deserialize(DATA_SMALL_ID)?),
-		#[cfg(feature = "small-is")]
-		ModelKind::SmallIs => Ok(WordFreq::deserialize(DATA_SMALL_IS)?),
-		#[cfg(feature = "small-it")]
-		ModelKind::SmallIt => Ok(WordFreq::deserialize(DATA_SMALL_IT)?),
-		#[cfg(feature = "small-ja")]
-		ModelKind::SmallJa => Ok(WordFreq::deserialize(DATA_SMALL_JA)?),
-		#[cfg(feature = "small-ko")]
-		ModelKind::SmallKo => Ok(WordFreq::deserialize(DATA_SMALL_KO)?),
-		#[cfg(feature = "small-lt")]
-		ModelKind::SmallLt => Ok(WordFreq::deserialize(DATA_SMALL_LT)?),
-		#[cfg(feature = "small-lv")]
-		ModelKind::SmallLv => Ok(WordFreq::deserialize(DATA_SMALL_LV)?),
-		#[cfg(feature = "small-mk")]
-		ModelKind::SmallMk => Ok(WordFreq::deserialize(DATA_SMALL_MK)?),
-		#[cfg(feature = "small-ms")]
-		ModelKind::SmallMs => Ok(WordFreq::deserialize(DATA_SMALL_MS)?),
-		#[cfg(feature = "small-nb")]
-		ModelKind::SmallNb => Ok(WordFreq::deserialize(DATA_SMALL_NB)?),
-		#[cfg(feature = "small-nl")]
-		ModelKind::SmallNl => Ok(WordFreq::deserialize(DATA_SMALL_NL)?),
-		#[cfg(feature = "small-pl")]
-		ModelKind::SmallPl => Ok(WordFreq::deserialize(DATA_SMALL_PL)?),
-		#[cfg(feature = "small-pt")]
-		ModelKind::SmallPt => Ok(WordFreq::deserialize(DATA_SMALL_PT)?),
-		#[cfg(feature = "small-ro")]
-		ModelKind::SmallRo => Ok(WordFreq::deserialize(DATA_SMALL_RO)?),
-		#[cfg(feature = "small-ru")]
-		ModelKind::SmallRu => Ok(WordFreq::deserialize(DATA_SMALL_RU)?),
-		#[cfg(feature = "small-sh")]
-		ModelKind::SmallSh => Ok(WordFreq::deserialize(DATA_SMALL_SH)?),
-		#[cfg(feature = "small-sk")]
-		ModelKind::SmallSk => Ok(WordFreq::deserialize(DATA_SMALL_SK)?),
-		#[cfg(feature = "small-sl")]
-		ModelKind::SmallSl => Ok(WordFreq::deserialize(DATA_SMALL_SL)?),
-		#[cfg(feature = "small-sv")]
-		ModelKind::SmallSv => Ok(WordFreq::deserialize(DATA_SMALL_SV)?),
-		#[cfg(feature = "small-ta")]
-		ModelKind::SmallTa => Ok(WordFreq::deserialize(DATA_SMALL_TA)?),
-		#[cfg(feature = "small-tr")]
-		ModelKind::SmallTr => Ok(WordFreq::deserialize(DATA_SMALL_TR)?),
-		#[cfg(feature = "small-uk")]
-		ModelKind::SmallUk => Ok(WordFreq::deserialize(DATA_SMALL_UK)?),
-		#[cfg(feature = "small-ur")]
-		ModelKind::SmallUr => Ok(WordFreq::deserialize(DATA_SMALL_UR)?),
-		#[cfg(feature = "small-vi")]
-		ModelKind::SmallVi => Ok(WordFreq::deserialize(DATA_SMALL_VI)?),
-		#[cfg(feature = "small-zh")]
-		ModelKind::SmallZh => Ok(WordFreq::deserialize(DATA_SMALL_ZH)?),
-}
+    match kind {
+        #[cfg(feature = "large-ar")]
+        ModelKind::LargeAr => Ok(WordFreq::deserialize(DATA_LARGE_AR)?),
+        #[cfg(feature = "large-bn")]
+        ModelKind::LargeBn => Ok(WordFreq::deserialize(DATA_LARGE_BN)?),
+        #[cfg(feature = "large-ca")]
+        ModelKind::LargeCa => Ok(WordFreq::deserialize(DATA_LARGE_CA)?),
+        #[cfg(feature = "large-cs")]
+        ModelKind::LargeCs => Ok(WordFreq::deserialize(DATA_LARGE_CS)?),
+        #[cfg(feature = "large-de")]
+        ModelKind::LargeDe => Ok(WordFreq::deserialize(DATA_LARGE_DE)?),
+        #[cfg(feature = "large-en")]
+        ModelKind::LargeEn => Ok(WordFreq::deserialize(DATA_LARGE_EN)?),
+        #[cfg(feature = "large-es")]
+        ModelKind::LargeEs => Ok(WordFreq::deserialize(DATA_LARGE_ES)?),
+        #[cfg(feature = "large-fi")]
+        ModelKind::LargeFi => Ok(WordFreq::deserialize(DATA_LARGE_FI)?),
+        #[cfg(feature = "large-fr")]
+        ModelKind::LargeFr => Ok(WordFreq::deserialize(DATA_LARGE_FR)?),
+        #[cfg(feature = "large-he")]
+        ModelKind::LargeHe => Ok(WordFreq::deserialize(DATA_LARGE_HE)?),
+        #[cfg(feature = "large-it")]
+        ModelKind::LargeIt => Ok(WordFreq::deserialize(DATA_LARGE_IT)?),
+        #[cfg(feature = "large-ja")]
+        ModelKind::LargeJa => Ok(WordFreq::deserialize(DATA_LARGE_JA)?),
+        #[cfg(feature = "large-mk")]
+        ModelKind::LargeMk => Ok(WordFreq::deserialize(DATA_LARGE_MK)?),
+        #[cfg(feature = "large-nb")]
+        ModelKind::LargeNb => Ok(WordFreq::deserialize(DATA_LARGE_NB)?),
+        #[cfg(feature = "large-nl")]
+        ModelKind::LargeNl => Ok(WordFreq::deserialize(DATA_LARGE_NL)?),
+        #[cfg(feature = "large-pl")]
+        ModelKind::LargePl => Ok(WordFreq::deserialize(DATA_LARGE_PL)?),
+        #[cfg(feature = "large-pt")]
+        ModelKind::LargePt => Ok(WordFreq::deserialize(DATA_LARGE_PT)?),
+        #[cfg(feature = "large-ru")]
+        ModelKind::LargeRu => Ok(WordFreq::deserialize(DATA_LARGE_RU)?),
+        #[cfg(feature = "large-sv")]
+        ModelKind::LargeSv => Ok(WordFreq::deserialize(DATA_LARGE_SV)?),
+        #[cfg(feature = "large-uk")]
+        ModelKind::LargeUk => Ok(WordFreq::deserialize(DATA_LARGE_UK)?),
+        #[cfg(feature = "large-zh")]
+        ModelKind::LargeZh => Ok(WordFreq::deserialize(DATA_LARGE_ZH)?),
+        #[cfg(feature = "small-ar")]
+        ModelKind::SmallAr => Ok(WordFreq::deserialize(DATA_SMALL_AR)?),
+        #[cfg(feature = "small-bg")]
+        ModelKind::SmallBg => Ok(WordFreq::deserialize(DATA_SMALL_BG)?),
+        #[cfg(feature = "small-bn")]
+        ModelKind::SmallBn => Ok(WordFreq::deserialize(DATA_SMALL_BN)?),
+        #[cfg(feature = "small-ca")]
+        ModelKind::SmallCa => Ok(WordFreq::deserialize(DATA_SMALL_CA)?),
+        #[cfg(feature = "small-cs")]
+        ModelKind::SmallCs => Ok(WordFreq::deserialize(DATA_SMALL_CS)?),
+        #[cfg(feature = "small-da")]
+        ModelKind::SmallDa => Ok(WordFreq::deserialize(DATA_SMALL_DA)?),
+        #[cfg(feature = "small-de")]
+        ModelKind::SmallDe => Ok(WordFreq::deserialize(DATA_SMALL_DE)?),
+        #[cfg(feature = "small-el")]
+        ModelKind::SmallEl => Ok(WordFreq::deserialize(DATA_SMALL_EL)?),
+        #[cfg(feature = "small-en")]
+        ModelKind::SmallEn => Ok(WordFreq::deserialize(DATA_SMALL_EN)?),
+        #[cfg(feature = "small-es")]
+        ModelKind::SmallEs => Ok(WordFreq::deserialize(DATA_SMALL_ES)?),
+        #[cfg(feature = "small-fa")]
+        ModelKind::SmallFa => Ok(WordFreq::deserialize(DATA_SMALL_FA)?),
+        #[cfg(feature = "small-fi")]
+        ModelKind::SmallFi => Ok(WordFreq::deserialize(DATA_SMALL_FI)?),
+        #[cfg(feature = "small-fil")]
+        ModelKind::SmallFil => Ok(WordFreq::deserialize(DATA_SMALL_FIL)?),
+        #[cfg(feature = "small-fr")]
+        ModelKind::SmallFr => Ok(WordFreq::deserialize(DATA_SMALL_FR)?),
+        #[cfg(feature = "small-he")]
+        ModelKind::SmallHe => Ok(WordFreq::deserialize(DATA_SMALL_HE)?),
+        #[cfg(feature = "small-hi")]
+        ModelKind::SmallHi => Ok(WordFreq::deserialize(DATA_SMALL_HI)?),
+        #[cfg(feature = "small-hu")]
+        ModelKind::SmallHu => Ok(WordFreq::deserialize(DATA_SMALL_HU)?),
+        #[cfg(feature = "small-id")]
+        ModelKind::SmallId => Ok(WordFreq::deserialize(DATA_SMALL_ID)?),
+        #[cfg(feature = "small-is")]
+        ModelKind::SmallIs => Ok(WordFreq::deserialize(DATA_SMALL_IS)?),
+        #[cfg(feature = "small-it")]
+        ModelKind::SmallIt => Ok(WordFreq::deserialize(DATA_SMALL_IT)?),
+        #[cfg(feature = "small-ja")]
+        ModelKind::SmallJa => Ok(WordFreq::deserialize(DATA_SMALL_JA)?),
+        #[cfg(feature = "small-ko")]
+        ModelKind::SmallKo => Ok(WordFreq::deserialize(DATA_SMALL_KO)?),
+        #[cfg(feature = "small-lt")]
+        ModelKind::SmallLt => Ok(WordFreq::deserialize(DATA_SMALL_LT)?),
+        #[cfg(feature = "small-lv")]
+        ModelKind::SmallLv => Ok(WordFreq::deserialize(DATA_SMALL_LV)?),
+        #[cfg(feature = "small-mk")]
+        ModelKind::SmallMk => Ok(WordFreq::deserialize(DATA_SMALL_MK)?),
+        #[cfg(feature = "small-ms")]
+        ModelKind::SmallMs => Ok(WordFreq::deserialize(DATA_SMALL_MS)?),
+        #[cfg(feature = "small-nb")]
+        ModelKind::SmallNb => Ok(WordFreq::deserialize(DATA_SMALL_NB)?),
+        #[cfg(feature = "small-nl")]
+        ModelKind::SmallNl => Ok(WordFreq::deserialize(DATA_SMALL_NL)?),
+        #[cfg(feature = "small-pl")]
+        ModelKind::SmallPl => Ok(WordFreq::deserialize(DATA_SMALL_PL)?),
+        #[cfg(feature = "small-pt")]
+        ModelKind::SmallPt => Ok(WordFreq::deserialize(DATA_SMALL_PT)?),
+        #[cfg(feature = "small-ro")]
+        ModelKind::SmallRo => Ok(WordFreq::deserialize(DATA_SMALL_RO)?),
+        #[cfg(feature = "small-ru")]
+        ModelKind::SmallRu => Ok(WordFreq::deserialize(DATA_SMALL_RU)?),
+        #[cfg(feature = "small-sh")]
+        ModelKind::SmallSh => Ok(WordFreq::deserialize(DATA_SMALL_SH)?),
+        #[cfg(feature = "small-sk")]
+        ModelKind::SmallSk => Ok(WordFreq::deserialize(DATA_SMALL_SK)?),
+        #[cfg(feature = "small-sl")]
+        ModelKind::SmallSl => Ok(WordFreq::deserialize(DATA_SMALL_SL)?),
+        #[cfg(feature = "small-sv")]
+        ModelKind::SmallSv => Ok(WordFreq::deserialize(DATA_SMALL_SV)?),
+        #[cfg(feature = "small-ta")]
+        ModelKind::SmallTa => Ok(WordFreq::deserialize(DATA_SMALL_TA)?),
+        #[cfg(feature = "small-tr")]
+        ModelKind::SmallTr => Ok(WordFreq::deserialize(DATA_SMALL_TR)?),
+        #[cfg(feature = "small-uk")]
+        ModelKind::SmallUk => Ok(WordFreq::deserialize(DATA_SMALL_UK)?),
+        #[cfg(feature = "small-ur")]
+        ModelKind::SmallUr => Ok(WordFreq::deserialize(DATA_SMALL_UR)?),
+        #[cfg(feature = "small-vi")]
+        ModelKind::SmallVi => Ok(WordFreq::deserialize(DATA_SMALL_VI)?),
+        #[cfg(feature = "small-zh")]
+        ModelKind::SmallZh => Ok(WordFreq::deserialize(DATA_SMALL_ZH)?),
+    }
 }
