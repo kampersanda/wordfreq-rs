@@ -1,7 +1,7 @@
 use std::env;
 
 use anyhow::Result;
-use wordfreq::WordFreq;
+use wordfreq_core::WordFreq;
 
 const DATA: &'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_en.bin"));
 

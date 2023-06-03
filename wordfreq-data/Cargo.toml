@@ -7,10 +7,10 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.71"
-wordfreq = { path = "../wordfreq" }
+wordfreq-core = { path = "../wordfreq-core" }
 
 [dev-dependencies]
 approx = "0.5.1"
 
 [build-dependencies]
-wordfreq = { path = "../wordfreq" }
+wordfreq-core = { path = "../wordfreq-core" }
