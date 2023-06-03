@@ -31,6 +31,13 @@ impl WordFreq {
         Self { map }
     }
 
+    pub fn get<W>(&self, word: W) -> f32
+    where
+        W: AsRef<str>,
+    {
+        self.map.get(word.as_ref()).cloned().unwrap_or(0.)
+    }
+
     pub fn serialize(&self) -> Result<Vec<u8>> {
         let mut bytes = vec![];
         for (k, v) in &self.map {
