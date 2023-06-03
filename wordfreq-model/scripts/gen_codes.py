@@ -13,6 +13,10 @@ for filename in filenames:
     lang = m.group('lang')
     targets.append((wordlist, lang))
 
+#########################
+# Cargo.toml
+#########################
+
 cargo_toml = '''[package]
 name = "wordfreq-model"
 version = "0.1.0"
@@ -36,6 +40,10 @@ with open('Cargo.toml', 'wt') as f:
     for wordlist, lang in targets:
         features_block.append(f'{wordlist}-{lang} = []')
     f.write(cargo_toml.format(features_block='\n'.join(features_block)))
+
+#########################
+# build.rs
+#########################
 
 build_rs = '''use std::env;
 use std::error::Error;
@@ -78,6 +86,10 @@ with open('build.rs', 'wt') as f:
         main_block.append(f'    #[cfg(feature = "{wordlist}-{lang}")]')
         main_block.append(f'    build("{wordlist}_{lang}")?;')
     f.write(build_rs.format(main_block='\n'.join(main_block)))
+
+#########################
+# src/lib.rs
+#########################
 
 lib_rs = '''use std::env;
 
