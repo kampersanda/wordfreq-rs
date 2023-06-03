@@ -13,9 +13,29 @@ for filename in filenames:
     lang = m.group('lang')
     targets.append((wordlist, lang))
 
-with open('features.txt', 'wt') as f:
+cargo_toml = '''[package]
+name = "wordfreq-data"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["large-en"]
+
+{features_block}
+
+[dependencies]
+anyhow = "1.0"
+wordfreq-core = {{ path = "../wordfreq-core" }}
+
+[build-dependencies]
+wordfreq-core = {{ path = "../wordfreq-core" }}
+'''
+
+with open('Cargo.toml', 'wt') as f:
+    features_block = []
     for wordlist, lang in targets:
-        f.write(f'{wordlist}-{lang} = {[]}\n')
+        features_block.append(f'{wordlist}-{lang} = []')
+    f.write(cargo_toml.format(features_block='\n'.join(features_block)))
 
 build_rs = '''use std::env;
 use std::error::Error;
