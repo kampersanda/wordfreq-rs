@@ -1,5 +1,5 @@
 [package]
-name = "wordfreq-core"
+name = "wordfreq-data"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,5 +7,10 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.71"
-bincode = "1.3.3"
-hashbrown = "0.13.2"
+wordfreq = { path = "../wordfreq" }
+
+[dev-dependencies]
+approx = "0.5.1"
+
+[build-dependencies]
+wordfreq = { path = "../wordfreq" }

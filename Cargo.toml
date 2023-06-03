@@ -1,2 +1,2 @@
 [workspace]
-members = ["wordfreq", "wordfreq-core"]
+members = ["wordfreq-data", "wordfreq"]

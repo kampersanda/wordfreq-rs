@@ -6,7 +6,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     use std::io::{BufReader, BufWriter, Write};
     use std::path::Path;
 
-    use wordfreq_core::WordFreq;
+    use wordfreq::WordFreq;
 
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=Cargo.toml");
@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let source_txt_file_path = resources_dir_path.join(txt_file_name);
 
     let reader = BufReader::new(File::open(source_txt_file_path)?);
-    let wf = WordFreq::new(wordfreq_core::word_weights_from_text(reader)?);
+    let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
 
     let model = wf.serialize()?;
 
