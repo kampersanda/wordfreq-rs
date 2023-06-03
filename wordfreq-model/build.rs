@@ -4,7 +4,7 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::Path;
 
-use wordfreq_core::WordFreq;
+use wordfreq::WordFreq;
 
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let build_dir = env::var_os("OUT_DIR").unwrap();
@@ -13,7 +13,7 @@ fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let input_file_path = resources_dir_path.join(file_base).with_extension("txt");
 
     let reader = BufReader::new(File::open(input_file_path)?);
-    let wf = WordFreq::new(wordfreq_core::word_weights_from_text(reader)?);
+    let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
     let model = wf.serialize()?;
 
     let output_file_path = Path::new(&build_dir).join(file_base).with_extension("bin");

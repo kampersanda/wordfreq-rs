@@ -25,10 +25,10 @@ default = ["large-en"]
 
 [dependencies]
 anyhow = "1.0"
-wordfreq-core = {{ path = "../wordfreq-core" }}
+wordfreq = {{ path = "../wordfreq" }}
 
 [build-dependencies]
-wordfreq-core = {{ path = "../wordfreq-core" }}
+wordfreq = {{ path = "../wordfreq" }}
 '''
 
 with open('Cargo.toml', 'wt') as f:
@@ -43,7 +43,7 @@ use std::fs::File;
 use std::io::{{BufReader, BufWriter, Write}};
 use std::path::Path;
 
-use wordfreq_core::WordFreq;
+use wordfreq::WordFreq;
 
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {{
     let build_dir = env::var_os("OUT_DIR").unwrap();
@@ -52,7 +52,7 @@ fn build(file_base: &str) -> Result<(), Box<dyn Error>> {{
     let input_file_path = resources_dir_path.join(file_base).with_extension("txt");
 
     let reader = BufReader::new(File::open(input_file_path)?);
-    let wf = WordFreq::new(wordfreq_core::word_weights_from_text(reader)?);
+    let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
     let model = wf.serialize()?;
 
     let output_file_path = Path::new(&build_dir).join(file_base).with_extension("bin");
@@ -79,10 +79,10 @@ with open('build.rs', 'wt') as f:
         main_block.append(f'    build("{wordlist}_{lang}")?;')
     f.write(build_rs.format(main_block='\n'.join(main_block)))
 
-model_rs = '''use std::env;
+lib_rs = '''use std::env;
 
 use anyhow::Result;
-use wordfreq_core::WordFreq;
+use wordfreq::WordFreq;
 
 pub enum ModelKind {{
 {model_kind_block}
@@ -97,7 +97,7 @@ pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
 }}
 '''
 
-with open('src/model.rs', 'wt') as f:
+with open('src/lib.rs', 'wt') as f:
     const_block = []
     for wordlist, lang in targets:
         const_block.append(f'#[cfg(feature = "{wordlist}-{lang}")]')
@@ -115,7 +115,7 @@ with open('src/model.rs', 'wt') as f:
             f'        ModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),'
         )
     f.write(
-        model_rs.format(
+        lib_rs.format(
             model_kind_block='\n'.join(model_kind_block),
             const_block='\n'.join(const_block),
             match_block='\n'.join(match_block),

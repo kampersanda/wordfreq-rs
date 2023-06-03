@@ -72,7 +72,7 @@ small-zh = []
 
 [dependencies]
 anyhow = "1.0"
-wordfreq-core = { path = "../wordfreq-core" }
+wordfreq = { path = "../wordfreq" }
 
 [build-dependencies]
-wordfreq-core = { path = "../wordfreq-core" }
+wordfreq = { path = "../wordfreq" }
