@@ -23,12 +23,14 @@
 //! ```
 //!
 //! There is no default feature.
-//! **Be sure to specify at least one feature.**
+//! **Be sure to specify features you want to use.**
 //!
 //! ## Examples
 //!
 //! [`load_wordfreq`] can create a [`WordFreq`] instance from a [`ModelKind`] enum value.
-//! [`ModelKind`] will have the specified feature names in CamelCase.
+//! [`ModelKind`] will have the specified feature names in CamelCase, such as `LargeEn` or `SmallJa`.
+//!
+//! By default, only [`ModelKind::ExampleEn`] appears for tests.
 //!
 //! ```
 //! use approx::assert_relative_eq;
@@ -43,8 +45,12 @@
 //!
 //! ## Notes
 //!
-//! This crate embeds models directly into the source code.
-//! Specify as many models as you need to avoid bloating your binary.
+//! This crate downloads specified model files and embeds the models directly into the source code.
+//! **Specify as many models as you need.**
+//!
+//! The actual model files to be used are placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
+//! If you do not desire automatic downloads, you can create [`WordFreq`] instances from these files directly.
+//! See the instructions in [`wordfreq`].
 use std::env;
 
 use anyhow::Result;
@@ -53,12 +59,13 @@ use wordfreq::WordFreq;
 /// Supported model kinds.
 ///
 /// Since only specified feature names are available,
-/// nothing will be displayed in docs.rs.
+/// only [`ModelKind::ExampleEn`] will be displayed in docs.rs.
 /// Normally, those you specify will be available such as `LargeEn` or `SmallJa`.
 ///
 /// If models you want to use are not available,
 /// specify the features following the Instructions.
 pub enum ModelKind {{
+    /// Example data for tests.
     ExampleEn,
 {model_kind_block}
 }}
