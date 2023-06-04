@@ -37,6 +37,21 @@ impl NumberHandler {
         }
     }
 
+    /// Replace sequences of multiple digits with zeroes, so we don't need to
+    /// distinguish the frequencies of thousands of numbers.
+    pub fn smash_numbers(&self, text: &str) -> String {
+        self.multi_digit_re
+            .replace_all(text, |captures: &Captures| self.sub_zeroes(captures))
+            .to_string()
+    }
+
+    /// Given a regex match, return what it matched with digits replaced by
+    /// zeroes.
+    fn sub_zeroes(&self, captures: &Captures) -> String {
+        let group0 = captures.get(0).unwrap().as_str();
+        self.digit_re.replace_all(group0, "0").to_string()
+    }
+
     /// Get the relative frequency of a string of digits, using our estimates.
     pub fn digit_freq(&self, text: &str) -> f32 {
         let mut freq = 1.;
@@ -93,21 +108,6 @@ impl NumberHandler {
         // distribution.
         let not_year_prob = NOT_YEAR_PROB * self.benford_freq(text);
         return year_prob + not_year_prob;
-    }
-
-    /// Replace sequences of multiple digits with zeroes, so we don't need to
-    /// distinguish the frequencies of thousands of numbers.
-    pub fn smash_numbers(&self, text: &str) -> String {
-        self.multi_digit_re
-            .replace_all(text, |captures: &Captures| self.sub_zeroes(captures))
-            .to_string()
-    }
-
-    /// Given a regex match, return what it matched with digits replaced by
-    /// zeroes.
-    fn sub_zeroes(&self, captures: &Captures) -> String {
-        let group0 = captures.get(0).unwrap().as_str();
-        self.digit_re.replace_all(group0, "0").to_string()
     }
 }
 
