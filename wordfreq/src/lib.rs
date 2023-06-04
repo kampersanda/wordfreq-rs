@@ -4,7 +4,7 @@
 //! allowing you to look up the frequencies of words in many languages.
 //!
 //! Note that **this crate provides only the algorithms and does not contain the models**.
-//! Use wordfreq-model to load distributed models. (Link is TBD)
+//! Use [wordfreq-model](https://docs.rs/wordfreq-model/) to load distributed models.
 //!
 //! ## Development status
 //!

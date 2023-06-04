@@ -11,6 +11,11 @@ This repository contains three crates:
 - [wordfreq-model](wordfreq-model) is a crate that provides a loader for pre-compiled wordfreq models.
 - [wordfreq-example](wordfreq-example) is a crate that provides an example program.
 
+## Getting started
+
+We recommend to see the [documentation of wordfreq-model](https://docs.rs/wordfreq-model/) for quick start.
+Next, [wordfreq-example](wordfreq-example) will be helpful to understand the behavior of this library.
+
 ## Licensing
 
 Licensed under either of

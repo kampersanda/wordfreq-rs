@@ -5,7 +5,7 @@ allowing you to look up the frequencies of words in many languages.
 
 ## Documentation
 
-TBW
+https://docs.rs/wordfreq/
 
 ## Licensing
 

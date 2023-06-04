@@ -5,7 +5,7 @@ allowing you to easily create wordfreq instances for various languages.
 
 ## Documentation
 
-TBW
+https://docs.rs/wordfreq-model/
 
 ## Licensing
 
