@@ -17,6 +17,8 @@ for filename in filenames:
 # Cargo.toml
 #########################
 
+wordfreq_version = '0.1'
+
 with open('templates/cargo_toml.txt', 'rt') as f:
     cargo_toml = f.read()
 
@@ -24,7 +26,12 @@ with open('Cargo.toml', 'wt') as f:
     features_block = []
     for wordlist, lang in targets:
         features_block.append(f'{wordlist}-{lang} = []')
-    f.write(cargo_toml.format(features_block='\n'.join(features_block)))
+    f.write(
+        cargo_toml.format(
+            features_block='\n'.join(features_block),
+            wordfreq_version=wordfreq_version,
+        )
+    )
 
 #########################
 # build.rs

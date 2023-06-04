@@ -1,6 +1,6 @@
 # wordfreq-model
 
-This crate provides a loader for pre-compiled wordfreq models,
+This crate provides a loader for pre-compiled [wordfreq models](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages),
 allowing you to easily create wordfreq instances for various languages.
 
 ## Documentation
