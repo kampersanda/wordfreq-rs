@@ -14,4 +14,9 @@ fn main() {
     println!("{:?}", wf.word_frequency("2022"));
     println!("{:?}", wf.word_frequency("1922"));
     println!("{:?}", wf.word_frequency("1022"));
+
+    println!("{:?}", wf.word_frequency("90210"));
+    println!("{:?}", wf.word_frequency("92222"));
+    println!("{:?}", wf.word_frequency("802.11n"));
+    println!("{:?}", wf.word_frequency("899.19n"));
 }

@@ -5,28 +5,11 @@ use std::io::BufRead;
 use anyhow::{anyhow, Result};
 use hashbrown::HashMap;
 
-///
-///
-/// # Examples
-///
-/// ```
-/// use approx::assert_relative_eq;
-/// use wordfreq::WordFreq;
-///
-/// let word_weights = [("las", 10.), ("vegas", 30.)];
-/// let wf = WordFreq::new(word_weights);
-///
-/// assert_relative_eq!(wf.word_frequency("las"), 0.25);
-/// assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
-/// assert_relative_eq!(wf.word_frequency("Las"), 0.00);
-///
-/// assert_relative_eq!(wf.zipf_frequency("las"), 0.25);
-/// assert_relative_eq!(wf.zipf_frequency("vegas"), 0.75);
-/// assert_relative_eq!(wf.zipf_frequency("Las"), 0.00);
-/// ```
+pub type Float = f64;
+
 pub struct WordFreq {
-    map: HashMap<String, f32>,
-    minimum: f32,
+    map: HashMap<String, Float>,
+    minimum: Float,
     num_handler: numbers::NumberHandler,
 }
 
@@ -42,7 +25,7 @@ impl WordFreq {
     /// If the input contains duplicate words, the last occurrence is used.
     pub fn new<I, W>(word_weights: I) -> Self
     where
-        I: IntoIterator<Item = (W, f32)>,
+        I: IntoIterator<Item = (W, Float)>,
         W: AsRef<str>,
     {
         let mut map: HashMap<_, _> = word_weights
@@ -58,16 +41,16 @@ impl WordFreq {
         }
     }
 
-    pub fn minimum(mut self, minimum: f32) -> Self {
+    pub fn minimum(mut self, minimum: Float) -> Self {
         self.minimum = minimum;
         self
     }
 
-    pub fn word_frequency<W>(&self, word: W) -> f32
+    pub fn word_frequency<W>(&self, word: W) -> Float
     where
         W: AsRef<str>,
     {
-        self.get(word).max(self.minimum)
+        self.word_frequency_in(word).unwrap_or(0.).max(self.minimum)
     }
 
     /// Returns the probability for an input word.
@@ -85,49 +68,51 @@ impl WordFreq {
     /// assert_relative_eq!(wf.zipf_frequency("vegas"), 8.88);
     /// assert_relative_eq!(wf.zipf_frequency("Las"), 0.00);
     /// ```
-    pub fn zipf_frequency<W>(&self, word: W) -> f32
+    pub fn zipf_frequency<W>(&self, word: W) -> Float
     where
         W: AsRef<str>,
     {
         let freq_min = Self::zipf_to_freq(self.minimum);
-        let freq = self.get(word).max(freq_min);
+        let freq = self.word_frequency_in(word).unwrap_or(0.).max(freq_min);
         let zipf = Self::freq_to_zipf(freq);
         Self::round(zipf, 2)
     }
 
-    pub fn word_frequency_inner<W>(&self, word: W) -> Option<f32>
+    fn word_frequency_in<W>(&self, word: W) -> Option<Float>
     where
         W: AsRef<str>,
     {
         let word = word.as_ref();
         let smashed = self.num_handler.smash_numbers(word);
-
         let mut freq = self.map.get(&smashed).cloned()?;
-
         if smashed != word {
+            // If there is a digit sequence in the token, the digits are
+            // internally replaced by 0s to aggregate their probabilities
+            // together. We then assign a specific frequency to the digit
+            // sequence using the `digit_freq` distribution.
             freq *= self.num_handler.digit_freq(word);
         }
 
+        // All our frequency data is only precise to within 1% anyway, so round
+        // it to 3 significant digits
+
+        // let leading_zeroes = (-freq.log10()).floor() as i32;
+        // Some(Self::round(freq, leading_zeroes + 3))
+
+        // NOTE(kampersanda): Rounding would not always be necessary.
         Some(freq)
     }
 
-    fn get<W>(&self, word: W) -> f32
-    where
-        W: AsRef<str>,
-    {
-        self.map.get(word.as_ref()).cloned().unwrap_or(0.)
+    fn zipf_to_freq(zipf: Float) -> Float {
+        Float::from(10.).powf(zipf - 9.)
     }
 
-    fn zipf_to_freq(zipf: f32) -> f32 {
-        10f32.powf(zipf - 9.)
-    }
-
-    fn freq_to_zipf(freq: f32) -> f32 {
+    fn freq_to_zipf(freq: Float) -> Float {
         freq.log10() + 9.
     }
 
-    fn round(x: f32, places: i32) -> f32 {
-        let multiplier = 10f32.powi(places);
+    fn round(x: Float, places: i32) -> Float {
+        let multiplier = Float::from(10.).powi(places);
         (x * multiplier).round() / multiplier
     }
 
@@ -144,7 +129,7 @@ impl WordFreq {
         let mut map = HashMap::new();
         while !bytes.is_empty() {
             let k: String = bincode::deserialize_from(&mut bytes)?;
-            let v: f32 = bincode::deserialize_from(&mut bytes)?;
+            let v: Float = bincode::deserialize_from(&mut bytes)?;
             map.insert(k, v);
         }
         Ok(Self {
@@ -178,7 +163,7 @@ impl WordFreq {
 /// # Ok(())
 /// # }
 /// ```
-pub fn word_weights_from_text<R: BufRead>(rdr: R) -> Result<Vec<(String, f32)>> {
+pub fn word_weights_from_text<R: BufRead>(rdr: R) -> Result<Vec<(String, Float)>> {
     let mut word_weights = vec![];
     for (i, line) in rdr.lines().enumerate() {
         let line = line?;
