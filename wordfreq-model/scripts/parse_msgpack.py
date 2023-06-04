@@ -1,5 +1,6 @@
 import argparse
 import gzip
+import zstandard as zstd
 
 import msgpack
 
@@ -33,11 +34,14 @@ def main():
     if header != {'format': 'cB', 'version': 1}:
         raise ValueError(f"Unexpected header: {header}")
 
-    with gzip.open(args.output, "wt") as outfile:
+    cctx = zstd.ZstdCompressor(level=19)
+    with open(args.output, "wb") as outfile:
+        compressor = cctx.stream_writer(outfile)
         for index, bucket in enumerate(data[1:]):
             freq = cB_to_freq(-index)
             for word in bucket:
-                outfile.write(f"{word} {freq}\n")
+                compressor.write(f"{word} {freq}\n".encode())
+        compressor.flush(zstd.FLUSH_FRAME)
 
 
 if __name__ == "__main__":
