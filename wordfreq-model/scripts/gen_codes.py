@@ -93,27 +93,8 @@ with open('build.rs', 'wt') as f:
 # src/lib.rs
 #########################
 
-lib_rs = '''use std::env;
-
-use anyhow::Result;
-use wordfreq::WordFreq;
-
-/// Supported model kinds.
-///
-/// If models you want are not available, specify the features in your `Cargo.toml`.
-pub enum ModelKind {{
-{model_kind_block}
-}}
-
-{const_block}
-
-/// Loads a pre-compiled [`WordFreq`] model.
-pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
-    match kind {{
-{match_block}
-    }}
-}}
-'''
+with open('templates/lib_rs.txt', 'rt') as f:
+    lib_rs = f.read()
 
 with open('src/lib.rs', 'wt') as f:
     const_block = []
