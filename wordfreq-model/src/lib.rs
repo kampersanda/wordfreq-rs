@@ -27,6 +27,9 @@
 //!
 //! ## Examples
 //!
+//! [`load_wordfreq`] can create a [`WordFreq`] instance from a [`ModelKind`] enum value.
+//! [`ModelKind`] will have the specified feature names in CamelCase.
+//!
 //! ```
 //! use wordfreq_model::load_wordfreq;
 //! use wordfreq_model::ModelKind;
