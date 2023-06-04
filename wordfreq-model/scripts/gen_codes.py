@@ -52,7 +52,7 @@ with open('src/lib.rs', 'wt') as f:
     for wordlist, lang in targets:
         const_block.append(f'#[cfg(feature = "{wordlist}-{lang}")]')
         const_block.append(
-            f'const DATA_{wordlist.upper()}_{lang.upper()}: &\'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/{wordlist}_{lang}.bin"));'
+            f'const DATA_{wordlist.upper()}_{lang.upper()}: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/{wordlist}_{lang}.bin"));'
         )
     model_kind_block = []
     for wordlist, lang in targets:
