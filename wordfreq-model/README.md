@@ -1,6 +1,6 @@
 # wordfreq-model
 
-This crate provides a loader for wordfreq models.
+This crate provides a loader for pre-compiled wordfreq models.
 
 ## Licensing
 
