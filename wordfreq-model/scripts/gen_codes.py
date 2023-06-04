@@ -1,17 +1,68 @@
-from glob import glob
-import re
-
-filenames = glob('resources/*.txt.gz')
-filenames.sort()
-
-matcher = re.compile(r'^resources\/(?P<wordlist>.+?)_(?P<lang>.+?)\.txt\.gz$')
-
-targets = []
-for filename in filenames:
-    m = matcher.match(filename)
-    wordlist = m.group('wordlist')
-    lang = m.group('lang')
-    targets.append((wordlist, lang))
+targets = [
+    # ('large', 'ar'),
+    # ('large', 'bn'),
+    # ('large', 'ca'),
+    # ('large', 'cs'),
+    # ('large', 'de'),
+    ('large', 'en'),
+    # ('large', 'es'),
+    # ('large', 'fi'),
+    ('large', 'fr'),
+    # ('large', 'he'),
+    # ('large', 'it'),
+    # ('large', 'ja'),
+    # ('large', 'mk'),
+    # ('large', 'nb'),
+    # ('large', 'nl'),
+    # ('large', 'pl'),
+    # ('large', 'pt'),
+    # ('large', 'ru'),
+    # ('large', 'sv'),
+    # ('large', 'uk'),
+    # ('large', 'zh'),
+    # ('small', 'ar'),
+    # ('small', 'bg'),
+    # ('small', 'bn'),
+    # ('small', 'ca'),
+    # ('small', 'cs'),
+    # ('small', 'da'),
+    # ('small', 'de'),
+    # ('small', 'el'),
+    ('small', 'en'),
+    # ('small', 'es'),
+    # ('small', 'fa'),
+    # ('small', 'fi'),
+    # ('small', 'fil'),
+    # ('small', 'fr'),
+    # ('small', 'he'),
+    # ('small', 'hi'),
+    # ('small', 'hu'),
+    # ('small', 'id'),
+    # ('small', 'is'),
+    # ('small', 'it'),
+    ('small', 'ja'),
+    # ('small', 'ko'),
+    # ('small', 'lt'),
+    # ('small', 'lv'),
+    # ('small', 'mk'),
+    # ('small', 'ms'),
+    # ('small', 'nb'),
+    # ('small', 'nl'),
+    # ('small', 'pl'),
+    # ('small', 'pt'),
+    # ('small', 'ro'),
+    # ('small', 'ru'),
+    # ('small', 'sh'),
+    # ('small', 'sk'),
+    # ('small', 'sl'),
+    # ('small', 'sv'),
+    # ('small', 'ta'),
+    # ('small', 'tr'),
+    # ('small', 'uk'),
+    # ('small', 'ur'),
+    # ('small', 'vi'),
+    # ('small', 'zh'),
+]
 
 #########################
 # Cargo.toml
