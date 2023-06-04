@@ -74,6 +74,6 @@ output_dir="resources"
 mkdir ${output_dir}
 
 for target in "${targets[@]}" ; do
-    echo "Compiling ${target}"
+    echo "Processing ${target}"
     python scripts/parse_msgpack.py ${data_dir}/${target}.msgpack.gz ${output_dir}/${target}.txt.gz
 done
