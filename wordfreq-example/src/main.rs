@@ -3,6 +3,7 @@ use wordfreq_model::ModelKind;
 
 fn main() {
     let wf = load_wordfreq(ModelKind::LargeEn).unwrap();
+
     println!("{:?}", wf.word_frequency("cafe"));
     println!("{:?}", wf.word_frequency("café"));
 

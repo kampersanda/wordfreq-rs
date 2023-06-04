@@ -5,7 +5,7 @@ use std::io::BufRead;
 use anyhow::{anyhow, Result};
 use hashbrown::HashMap;
 
-pub type Float = f64;
+pub type Float = f32;
 
 pub struct WordFreq {
     map: HashMap<String, Float>,
@@ -85,6 +85,7 @@ impl WordFreq {
         let word = word.as_ref();
         let smashed = self.num_handler.smash_numbers(word);
         let mut freq = self.map.get(&smashed).cloned()?;
+
         if smashed != word {
             // If there is a digit sequence in the token, the digits are
             // internally replaced by 0s to aggregate their probabilities
@@ -95,7 +96,6 @@ impl WordFreq {
 
         // All our frequency data is only precise to within 1% anyway, so round
         // it to 3 significant digits
-
         // let leading_zeroes = (-freq.log10()).floor() as i32;
         // Some(Self::round(freq, leading_zeroes + 3))
 
@@ -151,10 +151,8 @@ impl WordFreq {
 ///
 /// ```
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
-/// use sif_embedding::util;
-///
 /// let word_weight_text = "las 10\nvegas 20\n";
-/// let word_weights = util::word_weights_from_text(word_weight_text.as_bytes())?;
+/// let word_weights = wordfreq::word_weights_from_text(word_weight_text.as_bytes())?;
 ///
 /// assert_eq!(
 ///     word_weights,
