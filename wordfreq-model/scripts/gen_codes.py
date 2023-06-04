@@ -17,24 +17,8 @@ for filename in filenames:
 # Cargo.toml
 #########################
 
-cargo_toml = '''[package]
-name = "wordfreq-model"
-version = "0.1.0"
-edition = "2021"
-
-[features]
-default = ["large-en"]
-
-{features_block}
-
-[dependencies]
-anyhow = "1.0"
-wordfreq = {{ path = "../wordfreq" }}
-
-[build-dependencies]
-flate2 = "1.0.26"
-wordfreq = {{ path = "../wordfreq" }}
-'''
+with open('templates/cargo_toml.txt', 'rt') as f:
+    cargo_toml = f.read()
 
 with open('Cargo.toml', 'wt') as f:
     features_block = []
@@ -46,41 +30,8 @@ with open('Cargo.toml', 'wt') as f:
 # build.rs
 #########################
 
-build_rs = '''use std::env;
-use std::error::Error;
-use std::fs::File;
-use std::io::{{BufReader, BufWriter, Write}};
-use std::path::Path;
-
-use flate2::read::GzDecoder;
-use wordfreq::WordFreq;
-
-fn build(file_base: &str) -> Result<(), Box<dyn Error>> {{
-    let build_dir = env::var_os("OUT_DIR").unwrap();
-
-    let resources_dir_path = Path::new("resources");
-    let input_file_path = resources_dir_path.join(file_base).with_extension("txt.gz");
-
-    let reader = BufReader::new(GzDecoder::new(File::open(input_file_path)?));
-    let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
-    let model = wf.serialize()?;
-
-    let output_file_path = Path::new(&build_dir).join(file_base).with_extension("bin");
-    let mut writer = BufWriter::new(File::create(output_file_path)?);
-    writer.write_all(&model)?;
-
-    Ok(())
-}}
-
-fn main() -> Result<(), Box<dyn Error>> {{
-    println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=Cargo.toml");
-
-{main_block}
-
-    Ok(())
-}}
-'''
+with open('templates/build_rs.txt', 'rt') as f:
+    build_rs = f.read()
 
 with open('build.rs', 'wt') as f:
     main_block = []
