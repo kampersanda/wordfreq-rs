@@ -7,27 +7,38 @@ use std::path::Path;
 use flate2::read::GzDecoder;
 use wordfreq::WordFreq;
 
-#[allow(dead_code)]
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let build_dir = env::var_os("OUT_DIR").unwrap();
-
-    let resources_dir_path = Path::new("resources");
-    let input_file_path = resources_dir_path.join(file_base).with_extension("txt.gz");
-
-    let reader = BufReader::new(GzDecoder::new(File::open(input_file_path)?));
-    let wf = WordFreq::new(wordfreq::word_weights_from_text(reader)?);
+    let wf = if file_base == "example_en" {
+        let word_weight_text = "las 10\nvegas 20\n".as_bytes();
+        WordFreq::new(wordfreq::word_weights_from_text(word_weight_text)?)
+    } else {
+        let file_name = Path::new(file_base).with_extension("txt.gz");
+        let input_file_path = Path::new(&build_dir).join(file_name);
+        if !input_file_path.exists() {
+            let tmp_path = input_file_path.with_extension("download");
+            let download_url = format!("https://github.com/kampersanda/wordfreq-rs/releases/download/models-v1/{file_base}.txt.gz");
+            let resp = ureq::get(&download_url).call()?;
+            let mut dest = File::create(&tmp_path)?;
+            std::io::copy(&mut resp.into_reader(), &mut dest)?;
+            dest.flush()?;
+            std::fs::rename(tmp_path, &input_file_path).expect("Failed to rename temporary file");
+        }
+        let reader = BufReader::new(GzDecoder::new(File::open(input_file_path)?));
+        WordFreq::new(wordfreq::word_weights_from_text(reader)?)
+    };
     let model = wf.serialize()?;
-
     let output_file_path = Path::new(&build_dir).join(file_base).with_extension("bin");
     let mut writer = BufWriter::new(File::create(output_file_path)?);
     writer.write_all(&model)?;
-
     Ok(())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=Cargo.toml");
+
+    build("example_en")?;
 
     #[cfg(feature = "large-ar")]
     build("large_ar")?;

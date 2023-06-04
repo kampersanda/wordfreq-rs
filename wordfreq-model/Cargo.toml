@@ -86,3 +86,4 @@ wordfreq = { version = "0.1", path = "../wordfreq" }
 [build-dependencies]
 flate2 = "1.0.26"
 wordfreq = { version = "0.1", path = "../wordfreq" }
+ureq = { version = "2.6.2", default-features = false, features = ["tls"] }

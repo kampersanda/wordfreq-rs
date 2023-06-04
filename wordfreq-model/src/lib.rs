@@ -30,11 +30,11 @@
 //! [`load_wordfreq`] can create a [`WordFreq`] instance from a [`ModelKind`] enum value.
 //! [`ModelKind`] will have the specified feature names in CamelCase.
 //!
-//! ```ignore
+//! ```
 //! use wordfreq_model::load_wordfreq;
 //! use wordfreq_model::ModelKind;
 //!
-//! let wf = load_wordfreq(ModelKind::LargeEn).unwrap();
+//! let wf = load_wordfreq(ModelKind::ExampleEn).unwrap();
 //! println!("{:?}", wf.word_frequency("cafe"));
 //! // => 1.2481286e-5
 //! println!("{:?}", wf.zipf_frequency("cafe"));
@@ -59,6 +59,7 @@ use wordfreq::WordFreq;
 /// If models you want to use are not available,
 /// specify the features following the Instructions.
 pub enum ModelKind {
+    ExampleEn,
     #[cfg(feature = "large-ar")]
     LargeAr,
     #[cfg(feature = "large-bn")]
@@ -187,6 +188,7 @@ pub enum ModelKind {
     SmallZh,
 }
 
+const DATA_EXAMPLE_EN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/example_en.bin"));
 #[cfg(feature = "large-ar")]
 const DATA_LARGE_AR: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/large_ar.bin"));
 #[cfg(feature = "large-bn")]
@@ -317,6 +319,7 @@ const DATA_SMALL_ZH: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_zh.
 /// Loads a pre-compiled [`WordFreq`] model.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {
     match kind {
+        ModelKind::ExampleEn => Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?),
         #[cfg(feature = "large-ar")]
         ModelKind::LargeAr => Ok(WordFreq::deserialize(DATA_LARGE_AR)?),
         #[cfg(feature = "large-bn")]
