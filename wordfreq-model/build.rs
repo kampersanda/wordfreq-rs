@@ -7,6 +7,7 @@ use std::path::Path;
 use flate2::read::GzDecoder;
 use wordfreq::WordFreq;
 
+#[allow(dead_code)]
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let build_dir = env::var_os("OUT_DIR").unwrap();
 
