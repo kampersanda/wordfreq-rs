@@ -9,8 +9,10 @@ use wordfreq::WordFreq;
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
     let build_dir = env::var_os("OUT_DIR").unwrap();
     let wf = if file_base == "example_en" {
-        let word_weight_text = b"las 10\nvegas 30\n";
-        WordFreq::new(wordfreq::word_weights_from_text(word_weight_text)?)
+        let word_weight_text = "las 10\nvegas 30\n";
+        WordFreq::new(wordfreq::word_weights_from_text(
+            word_weight_text.as_bytes(),
+        )?)
     } else {
         let file_name = Path::new(file_base).with_extension("txt.zst");
         let input_file_path = Path::new(&build_dir).join(file_name);
