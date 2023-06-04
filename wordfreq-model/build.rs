@@ -4,7 +4,6 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::Path;
 
-use flate2::read::GzDecoder;
 use wordfreq::WordFreq;
 
 fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
@@ -13,18 +12,18 @@ fn build(file_base: &str) -> Result<(), Box<dyn Error>> {
         let word_weight_text = "las 10\nvegas 30\n".as_bytes();
         WordFreq::new(wordfreq::word_weights_from_text(word_weight_text)?)
     } else {
-        let file_name = Path::new(file_base).with_extension("txt.gz");
+        let file_name = Path::new(file_base).with_extension("txt.zst");
         let input_file_path = Path::new(&build_dir).join(file_name);
         if !input_file_path.exists() {
             let tmp_path = input_file_path.with_extension("download");
-            let download_url = format!("https://github.com/kampersanda/wordfreq-rs/releases/download/models-v1/{file_base}.txt.gz");
+            let download_url = format!("https://github.com/kampersanda/wordfreq-rs/releases/download/models-v1/{file_base}.txt.zst");
             let resp = ureq::get(&download_url).call()?;
             let mut dest = File::create(&tmp_path)?;
             std::io::copy(&mut resp.into_reader(), &mut dest)?;
             dest.flush()?;
             std::fs::rename(tmp_path, &input_file_path).expect("Failed to rename temporary file");
         }
-        let reader = BufReader::new(GzDecoder::new(File::open(input_file_path)?));
+        let reader = BufReader::new(zstd::Decoder::new(File::open(input_file_path)?)?);
         WordFreq::new(wordfreq::word_weights_from_text(reader)?)
     };
     let model = wf.serialize()?;
