@@ -3,7 +3,31 @@
 //! This crate is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
 //! allowing you to look up the frequencies of words in many languages.
 //!
-//! ## Usage
+//! Note that **this crate provides only the algorithms and does not contain the models**.
+//! Use wordfreq-model to load distributed models. (Link is TBD)
+//!
+//! ## Development status
+//!
+//! This aims to reproduce the behavior of the original Python implementation,
+//! but it is not yet perfect (and we do not know if we will provide everything).
+//!
+//! Features currently provided and not provided are listed below:
+//!
+//! ### Provided
+//!
+//! - [Original wordfreq models](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages)
+//! - [Estimation for numbers](https://github.com/rspeer/wordfreq/tree/v3.0.2#numbers)
+//!
+//! ### Not provided
+//!
+//! - [Additional functions](https://github.com/rspeer/wordfreq/tree/v3.0.2#other-functions)
+//! - [Tokenization and normalization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
+//! - [Multi-script languages](https://github.com/rspeer/wordfreq/tree/v3.0.2#multi-script-languages)
+//!
+//! ## Notes
+//!
+//! Even if the algorithms are the same, the results may differ slightly from the original implementation
+//! due to floating point precision.
 #![deny(missing_docs)]
 
 mod numbers;
@@ -16,7 +40,7 @@ use hashbrown::HashMap;
 /// Common type of floating numbers.
 pub type Float = f32;
 
-///
+/// Implementation of wordfreq.
 pub struct WordFreq {
     map: HashMap<String, Float>,
     minimum: Float,
@@ -24,7 +48,7 @@ pub struct WordFreq {
 }
 
 impl WordFreq {
-    /// Creates the language model.
+    /// Creates an instance from frequencies.
     ///
     /// # Arguments
     ///
@@ -51,13 +75,32 @@ impl WordFreq {
         }
     }
 
+    /// Sets the lower bound of returned frequencies (default is 0.0).
     ///
-    pub fn minimum(mut self, minimum: Float) -> Self {
+    /// An error is returned if the input is negative.
+    pub fn minimum(mut self, minimum: Float) -> Result<Self> {
+        if minimum < 0. {
+            return Err(anyhow!("minimum must be non-negative"));
+        }
         self.minimum = minimum;
-        self
+        Ok(self)
     }
 
+    /// Returns the word's frequency, normalized between 0.0 and 1.0.
     ///
+    /// # Examples
+    ///
+    /// ```
+    /// use approx::assert_relative_eq;
+    /// use wordfreq::WordFreq;
+    ///
+    /// let word_weights = [("las", 10.), ("vegas", 30.)];
+    /// let wf = WordFreq::new(word_weights);
+    ///
+    /// assert_relative_eq!(wf.word_frequency("las"), 0.25);
+    /// assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
+    /// assert_relative_eq!(wf.word_frequency("Las"), 0.00);
+    /// ```
     pub fn word_frequency<W>(&self, word: W) -> Float
     where
         W: AsRef<str>,
@@ -65,7 +108,7 @@ impl WordFreq {
         self.word_frequency_in(word).unwrap_or(0.).max(self.minimum)
     }
 
-    /// Returns the probability for an input word.
+    /// Returns the Zipf frequency of a word as a human-friendly logarithmic scale.
     ///
     /// # Examples
     ///
@@ -128,7 +171,9 @@ impl WordFreq {
         (x * multiplier).round() / multiplier
     }
 
+    /// Exports the model data.
     ///
+    /// Note that the format is distinct from the one used in the oritinal Python package.
     pub fn serialize(&self) -> Result<Vec<u8>> {
         let mut bytes = vec![];
         for (k, v) in &self.map {
@@ -138,7 +183,7 @@ impl WordFreq {
         Ok(bytes)
     }
 
-    ///
+    /// Deserializes the model, which is exported by [`WordFreq::serialize()`].
     pub fn deserialize(mut bytes: &[u8]) -> Result<Self> {
         let mut map = HashMap::new();
         while !bytes.is_empty() {
