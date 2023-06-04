@@ -13,7 +13,7 @@ keywords = ["nlp"]
 categories = ["text-processing"]
 
 [features]
-default = ["large-en"]
+default = []
 
 {features_block}
 

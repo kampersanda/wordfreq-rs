@@ -19,18 +19,18 @@
 //!
 //! [dependencies.wordfreq-model]
 //! version = "0.1"
-//! default-features = false
 //! features = ["large-en", "small-ja"]
 //! ```
 //!
-//! By default, only `small-en` is enabled.
+//! There is no default feature.
+//! **Be sure to specify at least one feature.**
 //!
 //! ## Examples
 //!
 //! [`load_wordfreq`] can create a [`WordFreq`] instance from a [`ModelKind`] enum value.
 //! [`ModelKind`] will have the specified feature names in CamelCase.
 //!
-//! ```
+//! ```ignore
 //! use wordfreq_model::load_wordfreq;
 //! use wordfreq_model::ModelKind;
 //!
@@ -51,6 +51,10 @@ use anyhow::Result;
 use wordfreq::WordFreq;
 
 /// Supported model kinds.
+///
+/// Since only specified feature names are available,
+/// nothing will be displayed in docs.rs.
+/// Normally, those you specify will be available such as `LargeEn` or `SmallJa`.
 ///
 /// If models you want to use are not available,
 /// specify the features following the Instructions.
