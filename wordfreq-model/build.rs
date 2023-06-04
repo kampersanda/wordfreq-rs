@@ -39,7 +39,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rerun-if-changed=Cargo.toml");
 
     build("example_en")?;
-
     #[cfg(feature = "large-ar")]
     build("large_ar")?;
     #[cfg(feature = "large-bn")]
