@@ -14,7 +14,7 @@ This repository contains three crates:
 ## Getting started
 
 We recommend to see the [documentation of wordfreq-model](https://docs.rs/wordfreq-model/) for quick start.
-Next, [wordfreq-example](wordfreq-example) will be helpful to understand the behavior of this library.
+Then, [wordfreq-example](wordfreq-example) will be helpful to understand the behavior of this library.
 
 ## Licensing
 
