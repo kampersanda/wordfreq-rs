@@ -1,5 +1,4 @@
-//! The code is ported from https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/numbers.py
-//! (with the comments).
+// The code is ported from https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/numbers.py (with the comments).
 use regex::{Captures, Regex};
 
 use crate::Float;

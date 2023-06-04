@@ -1,6 +1,7 @@
 # wordfreq
 
-This crate provides a loader for wordfreq models.
+This crate is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
+allowing you to look up the frequencies of words in many languages.
 
 ## Documentation
 

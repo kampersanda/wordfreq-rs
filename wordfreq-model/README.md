@@ -18,8 +18,8 @@ Source code is licensed under either of
 
 at your option.
 
-In addition, this crate contains model files copied from the [wordfreq](https://github.com/rspeer/wordfreq) repository in the [resources](resources) directory,
-which are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+In addition, this crate contains model files copied from the [wordfreq](https://github.com/rspeer/wordfreq) repository in the [resources](resources) directory.
+The model files are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## Development guide
 
