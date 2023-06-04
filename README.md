@@ -1,5 +1,7 @@
 # wordfreq-rs
 
+**Note that not all models are currently being distributed due to construction.**
+
 This library is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
 allowing you to look up the frequencies of words in many languages.
 
