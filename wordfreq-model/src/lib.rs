@@ -34,11 +34,11 @@
 //! use wordfreq_model::load_wordfreq;
 //! use wordfreq_model::ModelKind;
 //!
-//! let wf = load_wordfreq(ModelKind::SmallEn).unwrap();
+//! let wf = load_wordfreq(ModelKind::LargeEn).unwrap();
 //! println!("{:?}", wf.word_frequency("cafe"));
-//! // => 1.2838035e-5
+//! // => 1.2481286e-5
 //! println!("{:?}", wf.zipf_frequency("cafe"));
-//! // => 4.11
+//! // => 4.1
 //! ```
 //!
 //! ## Notes
