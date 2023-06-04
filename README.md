@@ -3,7 +3,7 @@
 This library is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
 allowing you to look up the frequencies of words in many languages.
 
-## Organization
+## Repository structure
 
 This repository contains three crates:
 
