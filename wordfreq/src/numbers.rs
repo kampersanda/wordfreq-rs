@@ -25,6 +25,11 @@ const NOT_YEAR_PROB: Float = 0.1;
 const REFERENCE_YEAR: Float = 2019.;
 const PLATEAU_WIDTH: Float = 20.;
 
+// To avoid annoying clippy errors.
+const FLOAT_10: Float = 10.;
+const FLOAT_0_2: Float = 0.2;
+const FLOAT_0_0083: Float = 0.0083;
+
 pub struct NumberHandler {
     digit_re: Regex,
     multi_digit_re: Regex,
@@ -75,7 +80,7 @@ impl NumberHandler {
         debug_assert_ne!(text.len(), 0);
         let chars = text.chars().collect::<Vec<char>>();
         let first_digit = chars[0].to_digit(10).unwrap() as usize;
-        DIGIT_FREQS[first_digit] / Float::from(10.).powi(chars.len() as i32 - 1)
+        DIGIT_FREQS[first_digit] / FLOAT_10.powi(chars.len() as i32 - 1)
     }
 
     /// Estimate the relative frequency of a particular 4-digit sequence representing
@@ -92,7 +97,7 @@ impl NumberHandler {
         let year_log_freq = if year <= REFERENCE_YEAR {
             // Fitting a line to the curve seen at
             // https://twitter.com/r_speer/status/1493715982887571456.
-            YEAR_LOG_PEAK - 0.0083 * (REFERENCE_YEAR - year)
+            FLOAT_0_0083.mul_add(-REFERENCE_YEAR + year, YEAR_LOG_PEAK)
         } else if REFERENCE_YEAR < year && year <= REFERENCE_YEAR + PLATEAU_WIDTH {
             // It's no longer 2019, which is when the Google Books data was last collected.
             // It's 2022 as I write this, and possibly even later as you're using it. Years
@@ -104,15 +109,15 @@ impl NumberHandler {
         } else {
             // Fall off quickly to catch up with the actual frequency of future years
             // (it's low). This curve is made up to fit with the made-up "present" data above.
-            YEAR_LOG_PEAK - 0.2 * (year - (REFERENCE_YEAR + PLATEAU_WIDTH))
+            FLOAT_0_2.mul_add(-year + (REFERENCE_YEAR + PLATEAU_WIDTH), YEAR_LOG_PEAK)
         };
 
-        let year_prob = Float::from(10.).powf(year_log_freq);
+        let year_prob = FLOAT_10.powf(year_log_freq);
 
         // If this token _doesn't_ represent a year, then use the Benford frequency
         // distribution.
         let not_year_prob = NOT_YEAR_PROB * self.benford_freq(text);
-        return year_prob + not_year_prob;
+        year_prob + not_year_prob
     }
 }
 

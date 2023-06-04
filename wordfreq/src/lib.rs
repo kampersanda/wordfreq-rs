@@ -40,6 +40,9 @@ use hashbrown::HashMap;
 /// Common type of floating numbers.
 pub type Float = f32;
 
+// To avoid annoying clippy errors.
+const FLOAT_10: Float = 10.;
+
 /// Implementation of wordfreq.
 pub struct WordFreq {
     map: HashMap<String, Float>,
@@ -159,7 +162,7 @@ impl WordFreq {
     }
 
     fn zipf_to_freq(zipf: Float) -> Float {
-        Float::from(10.).powf(zipf - 9.)
+        FLOAT_10.powf(zipf - 9.)
     }
 
     fn freq_to_zipf(freq: Float) -> Float {
@@ -167,7 +170,7 @@ impl WordFreq {
     }
 
     fn round(x: Float, places: i32) -> Float {
-        let multiplier = Float::from(10.).powi(places);
+        let multiplier = FLOAT_10.powi(places);
         (x * multiplier).round() / multiplier
     }
 
