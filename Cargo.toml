@@ -1,2 +1,3 @@
 [workspace]
-members = ["wordfreq", "wordfreq-example", "wordfreq-model"]
+members = ["wordfreq", "wordfreq-model"]
+exclude = ["wordfreq-example"]
