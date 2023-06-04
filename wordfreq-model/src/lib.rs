@@ -3,6 +3,9 @@ use std::env;
 use anyhow::Result;
 use wordfreq::WordFreq;
 
+/// Supported model kinds.
+///
+/// If models you want are not available, specify the features in your `Cargo.toml`.
 pub enum ModelKind {
     #[cfg(feature = "large-ar")]
     LargeAr,
@@ -259,6 +262,7 @@ const DATA_SMALL_VI: &'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/s
 #[cfg(feature = "small-zh")]
 const DATA_SMALL_ZH: &'static [u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_zh.bin"));
 
+/// Loads a pre-compiled [`WordFreq`] model.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {
     match kind {
         #[cfg(feature = "large-ar")]
