@@ -1,6 +1,11 @@
 # wordfreq-model
 
-This crate provides a loader for pre-compiled wordfreq models.
+This crate provides a loader for pre-compiled wordfreq models,
+allowing you to easily create wordfreq instances for various languages.
+
+## Documentation
+
+TBW
 
 ## Licensing
 
