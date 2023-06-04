@@ -19,8 +19,8 @@ default = ["large-en"]
 
 [dependencies]
 anyhow = "1.0"
-wordfreq = {{ path = "../wordfreq" }}
+wordfreq = {{ version = "{wordfreq_version}", path = "../wordfreq" }}
 
 [build-dependencies]
 flate2 = "1.0.26"
-wordfreq = {{ path = "../wordfreq" }}
+wordfreq = {{ version = "{wordfreq_version}", path = "../wordfreq" }}
