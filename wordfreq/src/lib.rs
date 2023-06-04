@@ -1,3 +1,5 @@
+mod numbers;
+
 use std::io::BufRead;
 
 use anyhow::{anyhow, Result};
