@@ -1,0 +1,17 @@
+[package]
+name = "wordfreq-model"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = ["large-en"]
+
+{features_block}
+
+[dependencies]
+anyhow = "1.0"
+wordfreq = {{ path = "../wordfreq" }}
+
+[build-dependencies]
+flate2 = "1.0.26"
+wordfreq = {{ path = "../wordfreq" }}

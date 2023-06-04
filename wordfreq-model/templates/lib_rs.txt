@@ -1,0 +1,65 @@
+//! # wordfreq-model
+//!
+//! This crate provides a loader for pre-compiled wordfreq models,
+//! allowing you to easily create [`WordFreq`] instances for various languages.
+//!
+//! ## Instructions
+//!
+//! The provided models are the same as those distributed in the original Python package.
+//! See the [original documentation](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages)
+//! for the supported languages and their sources.
+//!
+//! You need to specify models you want to use with `features`.
+//! The feature names are in the form of `large-xx` or `small-xx`, where `xx` is the language code.
+//! For example, if you want to use the large-English and small-Japanese models,
+//! specify `large-en` and `small-ja` as follows:
+//!
+//! ```toml
+//! # Cargo.toml
+//!
+//! [dependencies.wordfreq-model]
+//! version = "0.1"
+//! default-features = false
+//! features = ["large-en", "small-ja"]
+//! ```
+//!
+//! By default, only `small-en` is enabled.
+//!
+//! ## Examples
+//!
+//! ```
+//! use wordfreq_model::load_wordfreq;
+//! use wordfreq_model::ModelKind;
+//!
+//! let wf = load_wordfreq(ModelKind::SmallEn).unwrap();
+//! println!("{{:?}}", wf.word_frequency("cafe"));
+//! // => 1.2838035e-5
+//! println!("{{:?}}", wf.zipf_frequency("cafe"));
+//! // => 4.11
+//! ```
+//!
+//! ## Notes
+//!
+//! This crate embeds models directly into the source code.
+//! Specify as many models as you need to avoid bloating your binary.
+use std::env;
+
+use anyhow::Result;
+use wordfreq::WordFreq;
+
+/// Supported model kinds.
+///
+/// If models you want to use are not available,
+/// specify the features following the Instructions.
+pub enum ModelKind {{
+{model_kind_block}
+}}
+
+{const_block}
+
+/// Loads a pre-compiled [`WordFreq`] model.
+pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
+    match kind {{
+{match_block}
+    }}
+}}

@@ -1,0 +1,11 @@
+[package]
+name = "wordfreq-example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.wordfreq-model]
+path = "../wordfreq-model"
+default-features = false
+features = ["large-en", "large-fr", "small-en"]
