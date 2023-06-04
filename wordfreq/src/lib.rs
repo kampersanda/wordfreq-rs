@@ -27,6 +27,7 @@ use hashbrown::HashMap;
 pub struct WordFreq {
     map: HashMap<String, f32>,
     minimum: f32,
+    num_handler: numbers::NumberHandler,
 }
 
 impl WordFreq {
@@ -50,7 +51,11 @@ impl WordFreq {
             .collect();
         let sum_weight = map.values().fold(0., |acc, w| acc + w);
         map.values_mut().for_each(|w| *w /= sum_weight);
-        Self { map, minimum: 0. }
+        Self {
+            map,
+            minimum: 0.,
+            num_handler: numbers::NumberHandler::new(),
+        }
     }
 
     pub fn minimum(mut self, minimum: f32) -> Self {
@@ -90,6 +95,22 @@ impl WordFreq {
         Self::round(zipf, 2)
     }
 
+    pub fn word_frequency_inner<W>(&self, word: W) -> Option<f32>
+    where
+        W: AsRef<str>,
+    {
+        let word = word.as_ref();
+        let smashed = self.num_handler.smash_numbers(word);
+
+        let mut freq = self.map.get(&smashed).cloned()?;
+
+        if smashed != word {
+            freq *= self.num_handler.digit_freq(word);
+        }
+
+        Some(freq)
+    }
+
     fn get<W>(&self, word: W) -> f32
     where
         W: AsRef<str>,
@@ -126,7 +147,11 @@ impl WordFreq {
             let v: f32 = bincode::deserialize_from(&mut bytes)?;
             map.insert(k, v);
         }
-        Ok(Self { map, minimum: 0. })
+        Ok(Self {
+            map,
+            minimum: 0.,
+            num_handler: numbers::NumberHandler::new(),
+        })
     }
 }
 

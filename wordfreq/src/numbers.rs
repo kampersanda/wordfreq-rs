@@ -37,12 +37,6 @@ impl NumberHandler {
         }
     }
 
-    /// Returns True iff the text has a digit sequence that will be normalized out
-    /// and handled with `digit_freq`.
-    pub fn has_digit_sequence(&self, text: &str) -> bool {
-        self.multi_digit_re.is_match(text)
-    }
-
     /// Get the relative frequency of a string of digits, using our estimates.
     pub fn digit_freq(&self, text: &str) -> f32 {
         let mut freq = 1.;
