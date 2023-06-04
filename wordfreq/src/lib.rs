@@ -1,3 +1,11 @@
+//! # wordfreq
+//!
+//! This crate is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
+//! allowing you to look up the frequencies of words in many languages.
+//!
+//! ## Usage
+#![deny(missing_docs)]
+
 mod numbers;
 
 use std::io::BufRead;
@@ -5,8 +13,10 @@ use std::io::BufRead;
 use anyhow::{anyhow, Result};
 use hashbrown::HashMap;
 
+/// Common type of floating numbers.
 pub type Float = f32;
 
+///
 pub struct WordFreq {
     map: HashMap<String, Float>,
     minimum: Float,
@@ -41,11 +51,13 @@ impl WordFreq {
         }
     }
 
+    ///
     pub fn minimum(mut self, minimum: Float) -> Self {
         self.minimum = minimum;
         self
     }
 
+    ///
     pub fn word_frequency<W>(&self, word: W) -> Float
     where
         W: AsRef<str>,
@@ -116,6 +128,7 @@ impl WordFreq {
         (x * multiplier).round() / multiplier
     }
 
+    ///
     pub fn serialize(&self) -> Result<Vec<u8>> {
         let mut bytes = vec![];
         for (k, v) in &self.map {
@@ -125,6 +138,7 @@ impl WordFreq {
         Ok(bytes)
     }
 
+    ///
     pub fn deserialize(mut bytes: &[u8]) -> Result<Self> {
         let mut map = HashMap::new();
         while !bytes.is_empty() {

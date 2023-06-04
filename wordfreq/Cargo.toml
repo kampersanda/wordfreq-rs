@@ -2,6 +2,15 @@
 name = "wordfreq"
 version = "0.1.0"
 edition = "2021"
+authors = ["Shunsuke Kanda (kampersanda) <shnsk.knd@gmail.com>"]
+description = "Yet another Rust port of wordfreq for looking up the frequencies of words in many languages"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://docs.rs/wordfreq"
+repository = "https://github.com/kampersanda/wordfreq-rs"
+homepage = "https://github.com/kampersanda/wordfreq-rs"
+keywords = ["nlp"]
+categories = ["text-processing"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
