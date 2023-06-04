@@ -25,6 +25,6 @@ wordfreq = {{ version = "{wordfreq_version}", path = "../wordfreq" }}
 approx = "0.5.1"
 
 [build-dependencies]
-flate2 = "1.0.26"
 wordfreq = {{ version = "{wordfreq_version}", path = "../wordfreq" }}
 ureq = {{ version = "2.6.2", default-features = false, features = ["tls"] }}
+zstd = "0.12"
