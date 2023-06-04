@@ -4,7 +4,8 @@
 //! allowing you to look up the frequencies of words in many languages.
 //!
 //! Note that **this crate provides only the algorithms and does not contain the models**.
-//! Use [wordfreq-model](https://docs.rs/wordfreq-model/) to load distributed models.
+//! Use [wordfreq-model](https://docs.rs/wordfreq-model/) to easily load distributed models.
+//! We recommend to see the [documentation](https://docs.rs/wordfreq-model/) for quick start.
 //!
 //! ## Development status
 //!
@@ -24,10 +25,32 @@
 //! - [Tokenization and normalization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
 //! - [Multi-script languages](https://github.com/rspeer/wordfreq/tree/v3.0.2#multi-script-languages)
 //!
-//! ## Notes
+//! ## Precision errors
 //!
 //! Even if the algorithms are the same, the results may differ slightly from the original implementation
 //! due to floating point precision.
+//!
+//! ## How to create instances from model files without wordfreq-model
+//!
+//! If you do not desire automatic downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
+//! you can create instances directly from the actual model files placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
+//! Their contents are `<word><SPACE><freq>` separated by lines, such as `word_weight_text` below,
+//! and you can create instances as follows:
+//!
+//! ```
+//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! use approx::assert_relative_eq;
+//! use wordfreq::WordFreq;
+//!
+//! let word_weight_text = "las 10\nvegas 30\n";
+//! let word_weights = wordfreq::word_weights_from_text(word_weight_text.as_bytes())?;
+//!
+//! let wf = WordFreq::new(word_weights);
+//! assert_relative_eq!(wf.word_frequency("las"), 0.25);
+//! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
+//! # Ok(())
+//! # }
+//! ```
 #![deny(missing_docs)]
 
 mod numbers;
@@ -213,12 +236,12 @@ impl WordFreq {
 ///
 /// ```
 /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
-/// let word_weight_text = "las 10\nvegas 20\n";
+/// let word_weight_text = "las 10\nvegas 30\n";
 /// let word_weights = wordfreq::word_weights_from_text(word_weight_text.as_bytes())?;
 ///
 /// assert_eq!(
 ///     word_weights,
-///     vec![("las".to_string(), 10.), ("vegas".to_string(), 20.)]
+///     vec![("las".to_string(), 10.), ("vegas".to_string(), 30.)]
 /// );
 /// # Ok(())
 /// # }

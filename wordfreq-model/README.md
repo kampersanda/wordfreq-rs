@@ -1,7 +1,5 @@
 # wordfreq-model
 
-**Note that not all models are currently being distributed due to construction.**
-
 This crate provides a loader for pre-compiled [wordfreq models](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages),
 allowing you to easily create wordfreq instances for various languages.
 
@@ -19,9 +17,6 @@ Source code is licensed under either of
    ([LICENSE-MIT](../LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
-
-In addition, this crate contains model files copied from the [wordfreq](https://github.com/rspeer/wordfreq) repository in the [resources](resources) directory.
-The model files are licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## Development guide
 
