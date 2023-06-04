@@ -7,5 +7,4 @@ edition = "2021"
 
 [dependencies.wordfreq-model]
 path = "../wordfreq-model"
-default-features = false
 features = ["large-en", "large-fr", "small-en"]
