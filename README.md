@@ -13,6 +13,27 @@ This repository contains three crates:
 
 ## Getting started
 
+As with the original wordfreq, you can start looking for word frequencies right away.
+
+```rust
+use wordfreq_model::load_wordfreq;
+use wordfreq_model::ModelKind;
+
+fn main() {
+    let wf_lgen = load_wordfreq(ModelKind::LargeEn).unwrap();
+    let wf_lgfr = load_wordfreq(ModelKind::LargeFr).unwrap();
+
+    println!("cafe(en) = {:?}", wf_lgen.word_frequency("cafe"));
+    // => 1.2481286e-5
+    println!("café(en) = {:?}", wf_lgen.word_frequency("café"));
+    // => 5.705049e-6
+    println!("cafe(fr) = {:?}", wf_lgfr.word_frequency("cafe"));
+    // => 1.533655e-6
+    println!("café(fr) = {:?}", wf_lgfr.word_frequency("café"));
+    // => 5.8307935e-5
+}
+```
+
 We recommend to see the [documentation of wordfreq-model](https://docs.rs/wordfreq-model/) for quick start.
 Then, [wordfreq-example](wordfreq-example) will be helpful to understand the behavior of this library.
 More detailed specifications are available in the [documentation of wordfreq](https://docs.rs/wordfreq/).
