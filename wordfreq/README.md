@@ -2,6 +2,10 @@
 
 This crate provides a loader for wordfreq models.
 
+## Documentation
+
+TBW
+
 ## Licensing
 
 Source code is licensed under either of
