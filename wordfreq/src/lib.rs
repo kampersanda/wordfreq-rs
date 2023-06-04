@@ -32,7 +32,7 @@
 //!
 //! ## How to create instances from model files without wordfreq-model
 //!
-//! If you do not desire automatic downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
+//! If you do not desire automatic model downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
 //! you can create instances directly from the actual model files placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
 //! Their contents are `<word><SPACE><freq>` separated by lines, such as `word_weight_text` below,
 //! and you can create instances as follows:
