@@ -83,6 +83,9 @@ small-zh = []
 anyhow = "1.0"
 wordfreq = { version = "0.1", path = "../wordfreq" }
 
+[dev-dependencies]
+approx = "0.5.1"
+
 [build-dependencies]
 flate2 = "1.0.26"
 wordfreq = { version = "0.1", path = "../wordfreq" }

@@ -31,14 +31,14 @@
 //! [`ModelKind`] will have the specified feature names in CamelCase.
 //!
 //! ```
+//! use approx::assert_relative_eq;
 //! use wordfreq_model::load_wordfreq;
 //! use wordfreq_model::ModelKind;
 //!
 //! let wf = load_wordfreq(ModelKind::ExampleEn).unwrap();
-//! println!("{:?}", wf.word_frequency("cafe"));
-//! // => 1.2481286e-5
-//! println!("{:?}", wf.zipf_frequency("cafe"));
-//! // => 4.1
+//! assert_relative_eq!(wf.word_frequency("las"), 0.25);
+//! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
 //! ```
 //!
 //! ## Notes
