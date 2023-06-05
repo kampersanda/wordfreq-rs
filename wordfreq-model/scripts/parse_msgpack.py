@@ -1,8 +1,8 @@
 import argparse
 import gzip
-import zstandard as zstd
 
 import msgpack
+import zstandard as zstd
 
 
 def cB_to_freq(cB: int) -> float:
