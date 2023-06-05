@@ -1,5 +1,9 @@
 # wordfreq-rs
 
+![](https://github.com/kampersanda/wordfreq-rs/actions/workflows/rust.yml/badge.svg)
+[![Documentation](https://docs.rs/wordfreq/badge.svg)](https://docs.rs/wordfreq)
+[![Crates.io](https://img.shields.io/crates/v/wordfreq.svg)](https://crates.io/crates/wordfreq)
+
 This library is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 allowing you to look up the frequencies of words in many languages.
 
