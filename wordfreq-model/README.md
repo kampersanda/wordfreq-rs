@@ -9,7 +9,7 @@ https://docs.rs/wordfreq-model/
 
 ## Licensing
 
-Source code is licensed under either of
+The source code is licensed under either of
 
  * Apache License, Version 2.0
    ([LICENSE-APACHE](../LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
@@ -17,6 +17,8 @@ Source code is licensed under either of
    ([LICENSE-MIT](../LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
+
+The actual model files are distributed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1) together with the license and credits.
 
 ## Development guide
 
@@ -40,7 +42,8 @@ $ pip install -r scripts/requirements.txt
 $ scripts/convert.sh
 ```
 
-Generate the source code according to the model files.
+Generate the source code according to the model files
+(maybe this should be done in rust-macro).
 
 ```shell
 $ python scripts/gen_codes.py
