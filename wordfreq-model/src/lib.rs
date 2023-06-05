@@ -5,7 +5,7 @@
 //!
 //! ## Instructions
 //!
-//! The provided models are the same as those distributed in the original Python package.
+//! The provided models are the same as those distributed in the [original Python package](https://doi.org/10.5281/zenodo.7199437).
 //! See the [original documentation](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages)
 //! for the supported languages and their sources.
 //!
@@ -46,11 +46,11 @@
 //! ## Notes
 //!
 //! This crate downloads specified model files and embeds the models directly into the source code.
-//! **Specify as many models as you need.**
+//! **Specify as many models as you need** to avoid extra downloads and bloating the resulting binary.
 //!
-//! The actual model files to be used are placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
-//! If you do not desire automatic downloads, you can create [`WordFreq`] instances from these files directly.
-//! See the instructions in [`wordfreq`].
+//! The actual model files to be used are placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1) together with the credits.
+//! If you do not desire automatic model downloads and binary embedding, you can create instances from these files directly.
+//! See the instructions in [wordfreq].
 use std::env;
 
 use anyhow::Result;

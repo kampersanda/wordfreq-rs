@@ -1,6 +1,6 @@
 # wordfreq-rs
 
-This library is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
+This library is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 allowing you to look up the frequencies of words in many languages.
 
 ## Repository structure
@@ -48,3 +48,5 @@ Licensed under either of
    ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
+
+The model files are distributed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1) together with the credits.
