@@ -1,6 +1,6 @@
 //! # wordfreq
 //!
-//! This crate is a yet another Rust port of [wordfreq](https://github.com/rspeer/wordfreq),
+//! This crate is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 //! allowing you to look up the frequencies of words in many languages.
 //!
 //! Note that **this crate provides only the algorithms and does not contain the models**.
@@ -12,7 +12,7 @@
 //! This aims to reproduce the behavior of the original Python implementation,
 //! but it is not yet perfect (and we do not know if we will provide everything).
 //!
-//! Features currently provided and not provided are listed below:
+//! Features currently provided and not provided are listed below.
 //!
 //! ### Provided
 //!
@@ -34,8 +34,16 @@
 //!
 //! If you do not desire automatic model downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
 //! you can create instances directly from the actual model files placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
-//! Their contents are `<word><SPACE><freq>` separated by lines, such as `word_weight_text` below,
-//! and you can create instances as follows:
+//! The model files describe words and their frequencies in the text format:
+//!
+//! ```text
+//! <word1> <freq1>
+//! <word2> <freq2>
+//! <word3> <freq3>
+//! ...
+//! ```
+//!
+//! You can create instances as follows:
 //!
 //! ```
 //! # fn main() -> Result<(), Box<dyn std::error::Error>> {

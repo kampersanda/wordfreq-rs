@@ -18,7 +18,7 @@ The source code is licensed under either of
 
 at your option.
 
-The actual model files are distributed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1) together with the license and credits.
+The actual model files are distributed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1) together with the credits.
 
 ## Development guide
 
