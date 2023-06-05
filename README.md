@@ -3,14 +3,6 @@
 This library is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 allowing you to look up the frequencies of words in many languages.
 
-## Repository structure
-
-This repository contains three crates:
-
-- [wordfreq](wordfreq) is a crate that provides an API to lookup word frequencies.
-- [wordfreq-model](wordfreq-model) is a crate that provides a loader for pre-compiled wordfreq models.
-- [wordfreq-example](wordfreq-example) is a crate that provides an example program.
-
 ## Getting started
 
 As with the original wordfreq, you can start looking for word frequencies right away.
@@ -34,9 +26,18 @@ fn main() {
 }
 ```
 
-We recommend to see the [documentation of wordfreq-model](https://docs.rs/wordfreq-model/) for quick start.
-Then, [wordfreq-example](wordfreq-example) will be helpful to understand the behavior of this library.
-More detailed specifications are available in the [documentation of wordfreq](https://docs.rs/wordfreq/).
+We recommend to first visit [wordfreq-model](https://docs.rs/wordfreq-model/) for getting started because it allows you to load distributed models automatically.
+[wordfreq-example](wordfreq-example) will also be helpful to understand the behavior of this library.
+
+The core API is provided by [wordfreq](https://docs.rs/wordfreq/).
+
+## Repository structure
+
+This repository contains three crates:
+
+- [wordfreq](wordfreq) is a crate that provides an API to lookup word frequencies.
+- [wordfreq-model](wordfreq-model) is a crate that provides a loader for pre-compiled wordfreq models.
+- [wordfreq-example](wordfreq-example) is a crate that provides an example program.
 
 ## Licensing
 

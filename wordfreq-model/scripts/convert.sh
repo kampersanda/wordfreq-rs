@@ -2,7 +2,7 @@
 
 set -eux
 
-data_dir="wordfreq-orig/wordfreq/data/"
+data_dir="rspeer-wordfreq-372f6db/wordfreq/data/"
 
 targets=(
     "large_ar"
