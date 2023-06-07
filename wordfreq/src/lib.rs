@@ -62,6 +62,7 @@
 #![deny(missing_docs)]
 
 mod numbers;
+pub mod preprocessers;
 
 use std::io::BufRead;
 
