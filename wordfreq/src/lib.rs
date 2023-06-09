@@ -63,6 +63,7 @@
 
 mod numbers;
 pub mod preprocessers;
+mod transliterate;
 
 use std::io::BufRead;
 
