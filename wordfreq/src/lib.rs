@@ -61,6 +61,7 @@
 //! ```
 #![deny(missing_docs)]
 
+pub mod language;
 mod numbers;
 pub mod preprocessers;
 mod transliterate;

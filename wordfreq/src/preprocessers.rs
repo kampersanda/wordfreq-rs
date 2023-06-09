@@ -6,6 +6,7 @@ use language_tags::LanguageTag;
 use regex::Regex;
 use unicode_normalization::UnicodeNormalization;
 
+use crate::language;
 use crate::transliterate::Transliterater;
 use crate::transliterate::Transliteration;
 
@@ -163,6 +164,18 @@ enum DiacriticsUnder {
 /// Unicode as "marks". We also remove an Arabic character called the tatweel,
 /// which is used to visually lengthen a word.
 ///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("ar").unwrap();
+/// assert_eq!(standardizer.apply("كَلِمَة"), "كلمة");
+/// ```
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("ar").unwrap();
+/// assert_eq!(standardizer.apply("الحمــــــد"), "الحمد");
+/// ```
+///
 /// # Transliteration of multi-script languages
 ///
 /// Some languages are written in multiple scripts, and require special care.
@@ -215,7 +228,8 @@ impl Standardizer {
     ///
     /// 'tokenizer' and 'lookup_transliteration' are not implemented.
     pub fn new(language: &str) -> Result<Self> {
-        let langtag = LanguageTag::parse(language)?;
+        let subtag = language::likely_subtag_from_language(language).unwrap();
+        let langtag = LanguageTag::parse(subtag)?;
         let script = langtag.script().unwrap_or("");
         let primary_language = langtag.primary_language();
 
@@ -224,6 +238,8 @@ impl Standardizer {
         } else {
             NormalForm::NFKC
         };
+
+        eprintln!("script: {}", script);
 
         // \p{} construct in regex is used to match a Unicode character property.
         // Mn stands for "Nonspacing Mark". \u{0640} is the Arabic Tatweel character (ـ).
@@ -340,19 +356,5 @@ impl Standardizer {
             LATIN_SMALL_LETTER_T_WITH_CEDILLA,
             LATIN_SMALL_LETTER_T_WITH_COMMA_BELOW,
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_tmp() {
-        let standardizer = Standardizer::new("de").unwrap();
-        let word = "natu\u{0308}rlich";
-        eprintln!("{word}");
-        eprintln!("{}", standardizer.apply(word));
-        eprintln!("{}", standardizer.apply(word).contains('\u{00FC}'));
     }
 }
