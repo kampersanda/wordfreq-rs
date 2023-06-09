@@ -35,11 +35,11 @@ enum DiacriticsUnder {
 /// The steps that are applied in order, only some of which apply to each
 /// language, are:
 ///
-/// - NFC or NFKC normalization, as needed for the language
-/// - Transliteration of multi-script languages
-/// - Abjad mark removal
-/// - Case folding
-/// - Fixing of diacritics
+/// - [NFC or NFKC normalization, as needed for the language](#unicode-normalization)
+/// - [Transliteration of multi-script languages](#transliteration-of-multi-script-languages)
+/// - [Abjad mark removal](#abjad-mark-removal)
+/// - [Case folding](#case-folding)
+/// - [Fixing of diacritics](#fixing-of-diacritics)
 ///
 /// We'll describe these steps out of order, to start with the more obvious
 /// steps.
@@ -153,6 +153,14 @@ enum DiacriticsUnder {
 /// assert_eq!(word, "낱말");
 /// assert_eq!(word.chars().count(), 2);
 /// ```
+///
+/// # Abjad mark removal
+///
+/// There are many abjad languages, such as Arabic, Hebrew, Persian, and Urdu,
+/// where words can be marked with vowel points but rarely are. In languages
+/// that use abjad scripts, we remove all modifiers that are classified by
+/// Unicode as "marks". We also remove an Arabic character called the tatweel,
+/// which is used to visually lengthen a word.
 ///
 /// # Transliteration of multi-script languages
 ///
