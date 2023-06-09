@@ -1,7 +1,7 @@
 //! https://github.com/rspeer/wordfreq/blob/master/wordfreq/preprocess.py
 //! https://github.com/rspeer/wordfreq/blob/master/wordfreq/language_info.py
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use language_tags::LanguageTag;
 use regex::Regex;
 use unicode_normalization::UnicodeNormalization;
@@ -228,9 +228,9 @@ impl Standardizer {
     ///
     /// 'tokenizer' and 'lookup_transliteration' are not implemented.
     pub fn new(language: &str) -> Result<Self> {
-        let subtag = language::likely_subtag_from_language(language).unwrap();
-        let langtag = LanguageTag::parse(subtag)?;
-        let script = langtag.script().unwrap_or("");
+        let subtag = language::likely_subtag_from_language(language).ok_or(anyhow!(""))?;
+        let langtag = LanguageTag::parse(subtag).unwrap();
+        let script = langtag.script().unwrap();
         let primary_language = langtag.primary_language();
 
         let normal_form = if ["Latn", "Grek", "Cyrl"].contains(&script) {
@@ -238,8 +238,6 @@ impl Standardizer {
         } else {
             NormalForm::NFKC
         };
-
-        eprintln!("script: {}", script);
 
         // \p{} construct in regex is used to match a Unicode character property.
         // Mn stands for "Nonspacing Mark". \u{0640} is the Arabic Tatweel character (ـ).
@@ -356,5 +354,18 @@ impl Standardizer {
             LATIN_SMALL_LETTER_T_WITH_CEDILLA,
             LATIN_SMALL_LETTER_T_WITH_COMMA_BELOW,
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_langtag_parse() {
+        for &(_, subtag) in language::LIKELY_SUBTAGS {
+            let langtag = LanguageTag::parse(subtag).unwrap();
+            assert!(langtag.script().is_some());
+        }
     }
 }

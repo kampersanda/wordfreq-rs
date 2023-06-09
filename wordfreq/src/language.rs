@@ -1870,8 +1870,7 @@ pub const LIKELY_SUBTAGS: &[(&str, &str)] = &[
     ("zza", "zza-Latn-TR"),
 ];
 
-///
-pub fn likely_subtag_from_language(language: &str) -> Option<&str> {
+pub(crate) fn likely_subtag_from_language(language: &str) -> Option<&str> {
     LIKELY_SUBTAGS
         .iter()
         .cloned()
