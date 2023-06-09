@@ -119,7 +119,8 @@ enum DiacriticsUnder {
 /// ```
 /// use wordfreq::Standardizer;
 /// let standardizer = Standardizer::new("de").unwrap();
-/// // assert_eq!(standardizer.apply(r"natu\u{0308}rlich"), "natürlich");
+/// let word = standardizer.apply("natu\u{0308}rlich");
+/// assert!(word.contains("ü"));
 /// ```
 ///
 /// NFC normalization is sufficient (and NFKC normalization is a bit too strong)
@@ -339,5 +340,19 @@ impl Standardizer {
             LATIN_SMALL_LETTER_T_WITH_CEDILLA,
             LATIN_SMALL_LETTER_T_WITH_COMMA_BELOW,
         )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tmp() {
+        let standardizer = Standardizer::new("de").unwrap();
+        let word = "natu\u{0308}rlich";
+        eprintln!("{word}");
+        eprintln!("{}", standardizer.apply(word));
+        eprintln!("{}", standardizer.apply(word).contains('\u{00FC}'));
     }
 }
