@@ -70,6 +70,8 @@ use std::io::BufRead;
 use anyhow::{anyhow, Result};
 use hashbrown::HashMap;
 
+pub use preprocessers::Standardizer;
+
 /// Common type of floating numbers.
 pub type Float = f32;
 

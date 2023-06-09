@@ -1,4 +1,5 @@
-//!
+//! https://github.com/rspeer/wordfreq/blob/master/wordfreq/preprocess.py
+//! https://github.com/rspeer/wordfreq/blob/master/wordfreq/language_info.py
 
 use anyhow::Result;
 use language_tags::LanguageTag;
@@ -24,9 +25,173 @@ enum DiacriticsUnder {
     None,
 }
 
-/// https://docs.rs/language-tags/
-/// https://github.com/rspeer/wordfreq/blob/master/wordfreq/language_info.py
-pub struct Preprocesser {
+/// This function applies pre-processing steps that convert forms of words
+/// considered equivalent into one standardized form.
+///
+/// As one straightforward step, it case-folds the text. For the purposes of
+/// wordfreq and related tools, a capitalized word shouldn't have a different
+/// frequency from its lowercase version.
+///
+/// The steps that are applied in order, only some of which apply to each
+/// language, are:
+///
+/// - NFC or NFKC normalization, as needed for the language
+/// - Transliteration of multi-script languages
+/// - Abjad mark removal
+/// - Case folding
+/// - Fixing of diacritics
+///
+/// We'll describe these steps out of order, to start with the more obvious
+/// steps.
+///
+/// # Case folding
+///
+/// The most common effect of this function is that it case-folds alphabetic
+/// text to lowercase:
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("en").unwrap();
+/// assert_eq!(standardizer.apply("Word"), "word");
+/// ```
+///
+/// This is proper Unicode-aware case-folding, so it eliminates distinctions
+/// in lowercase letters that would not appear in uppercase. This accounts for
+/// the German ß and the Greek final sigma:
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("de").unwrap();
+/// assert_eq!(standardizer.apply("groß"), "gross");
+/// ```
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("el").unwrap();
+/// assert_eq!(standardizer.apply("λέξις"), "λέξισ");
+/// ```
+///
+/// In Turkish (and Azerbaijani), case-folding is different, because the
+/// uppercase and lowercase I come in two variants, one with a dot and one
+/// without. They are matched in a way that preserves the number of dots, which
+/// the usual pair of "I" and "i" do not.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("tr").unwrap();
+/// assert_eq!(standardizer.apply("HAKKINDA İSTANBUL"), "hakkında istanbul");
+/// ```
+///
+/// # Fixing of diacritics
+///
+/// While we're talking about Turkish: the Turkish alphabet contains letters
+/// with cedillas attached to the bottom. In the case of "ş" and "ţ", these
+/// letters are very similar to two Romanian letters, "ș" and "ț", which have
+/// separate _commas_ below them.
+///
+/// (Did you know that a cedilla is not the same as a comma under a letter? I
+/// didn't until I started dealing with text normalization. My keyboard layout
+/// even inputs a letter with a cedilla when you hit Compose+comma.)
+///
+/// Because these letters look so similar, and because some fonts only include
+/// one pair of letters and not the other, there are many cases where the
+/// letters are confused with each other. Our preprocessing normalizes these
+/// Turkish and Romanian letters to the letters each language prefers.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("tr").unwrap();
+/// assert_eq!(standardizer.apply("kișinin"), "kişinin");
+/// ```
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("ro").unwrap();
+/// assert_eq!(standardizer.apply("ACELAŞI"), "același");
+/// ```
+///
+/// # Unicode normalization
+///
+/// Unicode text is NFC normalized in most languages, removing trivial
+/// distinctions between strings that should be considered equivalent in all
+/// cases:
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("de").unwrap();
+/// // assert_eq!(standardizer.apply(r"natu\u{0308}rlich"), "natürlich");
+/// ```
+///
+/// NFC normalization is sufficient (and NFKC normalization is a bit too strong)
+/// for many languages that are written in cased, alphabetic scripts.
+/// Languages in other scripts tend to need stronger normalization to properly
+/// compare text. So we use NFC normalization when the language's script is
+/// Latin, Greek, or Cyrillic, and we use NFKC normalization for all other
+/// languages.
+///
+/// Here's an example in Japanese, where preprocessing changes the width (and
+/// the case) of a Latin letter that's used as part of a word:
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("ja").unwrap();
+/// assert_eq!(standardizer.apply("Ｕターン"), "uターン");
+/// ```
+///
+/// In Korean, NFKC normalization is important because it aligns two different
+/// ways of encoding text -- as individual letters that are grouped together
+/// into square characters, or as the entire syllables that those characters
+/// represent:
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("ko").unwrap();
+/// let word = "\u{1102}\u{1161}\u{11c0}\u{1106}\u{1161}\u{11af}";
+/// assert_eq!(word, "낱말");
+/// assert_eq!(word.chars().count(), 6);
+/// let word = standardizer.apply(word);
+/// assert_eq!(word, "낱말");
+/// assert_eq!(word.chars().count(), 2);
+/// ```
+///
+/// # Transliteration of multi-script languages
+///
+/// Some languages are written in multiple scripts, and require special care.
+/// These languages include Chinese, Serbian, and Azerbaijani.
+///
+/// In Serbian, there is a well-established mapping from Cyrillic letters to
+/// Latin letters. We apply this mapping so that Serbian is always represented
+/// in Latin letters.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("sr").unwrap();
+/// assert_eq!(standardizer.apply("схваташ"), "shvataš");
+/// ```
+///
+/// The transliteration is more complete than it needs to be to cover just
+/// Serbian, so that -- for example -- borrowings from Russian can be
+/// transliterated, instead of coming out in a mixed script.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("sr").unwrap();
+/// assert_eq!(standardizer.apply("культуры"), "kul'tury");
+/// ```
+///
+/// Azerbaijani (Azeri) has a similar transliteration step to Serbian,
+/// and then the Latin-alphabet text is handled similarly to Turkish.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("az").unwrap();
+/// assert_eq!(standardizer.apply("бағырты"), "bağırtı");
+/// ```
+///
+/// We don't transliterate Traditional to Simplified Chinese in this step.
+/// There are some steps where we unify them internally: see chinese.py
+/// for more information.
+pub struct Standardizer {
     normal_form: NormalForm,
     mark_re: Option<Regex>,
     dotless_i: bool,
@@ -34,13 +199,15 @@ pub struct Preprocesser {
     transliterater: Option<Transliterater>,
 }
 
-impl Preprocesser {
+impl Standardizer {
     /// https://github.com/rspeer/langcodes/blob/49beea8e20ae26c2dead7bd77f41cfba0e0ab533/langcodes/__init__.py#L182
     ///
+    /// https://docs.rs/language-tags/
+    ///
     /// 'tokenizer' and 'lookup_transliteration' are not implemented.
-    pub fn new(langcode: &str) -> Result<Self> {
-        let langtag = LanguageTag::parse(langcode)?;
-        let script = langtag.script().unwrap();
+    pub fn new(language: &str) -> Result<Self> {
+        let langtag = LanguageTag::parse(language)?;
+        let script = langtag.script().unwrap_or("");
         let primary_language = langtag.primary_language();
 
         let normal_form = if ["Latn", "Grek", "Cyrl"].contains(&script) {
@@ -83,7 +250,7 @@ impl Preprocesser {
     }
 
     ///
-    pub fn normalize(&self, text: &str) -> String {
+    pub fn apply(&self, text: &str) -> String {
         // NFC or NFKC normalization, as needed for the language
         let text = match self.normal_form {
             NormalForm::NFC => text.nfc().collect::<String>(),
@@ -128,7 +295,7 @@ impl Preprocesser {
     /// Converts capital I's and capital dotted İ's to lowercase in the way
     /// that's appropriate for Turkish and related languages, then case-fold
     /// the rest of the letters.
-    pub fn casefold_with_i_dots(&self, text: &str) -> String {
+    fn casefold_with_i_dots(&self, text: &str) -> String {
         let text = text.nfc().collect::<String>();
         let text = text.replace("İ", "i").replace("I", "ı");
         caseless::default_case_fold_str(&text)
@@ -139,7 +306,7 @@ impl Preprocesser {
     ///
     /// Only the lowercase versions are replaced, because this assumes the
     /// text has already been case-folded.
-    pub fn commas_to_cedillas(&self, text: &str) -> String {
+    fn commas_to_cedillas(&self, text: &str) -> String {
         text.replace(
             LATIN_SMALL_LETTER_S_WITH_COMMA_BELOW,
             LATIN_SMALL_LETTER_S_WITH_CEDILLA,
@@ -155,7 +322,7 @@ impl Preprocesser {
     ///
     /// Only the lowercase versions are replaced, because this assumes the
     /// ext has already been case-folded.
-    pub fn cedillas_to_commas(&self, text: &str) -> String {
+    fn cedillas_to_commas(&self, text: &str) -> String {
         text.replace(
             LATIN_SMALL_LETTER_S_WITH_CEDILLA,
             LATIN_SMALL_LETTER_S_WITH_COMMA_BELOW,
