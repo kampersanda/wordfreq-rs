@@ -1,0 +1,9 @@
+[package]
+name = "wordfreq-model-test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.wordfreq-model]
+features = [
+{features_block}
+]
