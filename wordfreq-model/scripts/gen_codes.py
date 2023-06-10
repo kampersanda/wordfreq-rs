@@ -122,8 +122,12 @@ with open('src/lib.rs', 'wt') as f:
     for wordlist, lang in targets:
         match_block.append(f'{TAB}{TAB}#[cfg(feature = "{wordlist}-{lang}")]')
         match_block.append(
-            f'{TAB}{TAB}ModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),'
+            f'{TAB}{TAB}ModelKind::{wordlist.capitalize()}{lang.capitalize()} => {{'
         )
+        match_block.append(
+            f'{TAB}{TAB}{TAB}Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?.standardizer(Standardizer::new("{lang}")?))'
+        )
+        match_block.append(f'{TAB}{TAB}}}')
     f.write(
         lib_rs.format(
             model_kind_block='\n'.join(model_kind_block),

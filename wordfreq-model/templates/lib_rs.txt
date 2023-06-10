@@ -54,6 +54,7 @@
 use std::env;
 
 use anyhow::Result;
+use wordfreq::Standardizer;
 use wordfreq::WordFreq;
 
 /// Supported model kinds.
@@ -76,7 +77,9 @@ const DATA_EXAMPLE_EN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/example
 /// Loads a pre-compiled [`WordFreq`] model.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
     match kind {{
-        ModelKind::ExampleEn => Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?),
+        ModelKind::ExampleEn => {{
+            Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?.standardizer(Standardizer::new("en")?))
+        }}
 {match_block}
     }}
 }}
