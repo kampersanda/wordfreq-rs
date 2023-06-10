@@ -1,36 +1,18 @@
+// Copyright 2022 Robyn Speer
+// Copyright 2023 Shunsuke Kanda
+//
+// The code is a port from https://github.com/rspeer/wordfreq/tree/v3.0.2
+// together with the comments, following the MIT-license.
 //! # wordfreq
 //!
 //! This crate is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 //! allowing you to look up the frequencies of words in many languages.
 //!
-//! Note that **this crate provides only the algorithms and does not contain the models**.
+//! Note that **this crate provides only the algorithms (including hardcoded standardization) and does not contain the models**.
 //! Use [wordfreq-model](https://docs.rs/wordfreq-model/) to easily load distributed models.
 //! We recommend to see the [documentation](https://docs.rs/wordfreq-model/) for quick start.
 //!
-//! ## Development status
-//!
-//! This aims to reproduce the behavior of the original Python implementation,
-//! but it is not yet perfect (and we do not know if we will provide everything).
-//!
-//! Features currently provided and not provided are listed below.
-//!
-//! ### Provided
-//!
-//! - [Original wordfreq models](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages)
-//! - [Estimation for numbers](https://github.com/rspeer/wordfreq/tree/v3.0.2#numbers)
-//!
-//! ### Not provided
-//!
-//! - [Additional functions](https://github.com/rspeer/wordfreq/tree/v3.0.2#other-functions)
-//! - [Tokenization and normalization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
-//! - [Multi-script languages](https://github.com/rspeer/wordfreq/tree/v3.0.2#multi-script-languages)
-//!
-//! ## Precision errors
-//!
-//! Even if the algorithms are the same, the results may differ slightly from the original implementation
-//! due to floating point precision.
-//!
-//! ## How to create instances from model files without wordfreq-model
+//! ## How to create instances without wordfreq-model
 //!
 //! If you do not desire automatic model downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
 //! you can create instances directly from the actual model files placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
@@ -56,17 +38,58 @@
 //! let wf = WordFreq::new(word_weights);
 //! assert_relative_eq!(wf.word_frequency("las"), 0.25);
 //! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! ## Standardization
+//!
+//! If you want to standardize words before looking up their frequencies,
+//! set up an instance of [`Standardizer`].
+//!
+//! ```
+//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! use approx::assert_relative_eq;
+//! use wordfreq::WordFreq;
+//! use wordfreq::Standardizer;
+//!
+//! let word_weight_text = "las 10\nvegas 30\n";
+//! let word_weights = wordfreq::word_weights_from_text(word_weight_text.as_bytes())?;
+//!
+//! let standardizer = Standardizer::new("en")?;
+//! let wf = WordFreq::new(word_weights).standardizer(standardizer);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Precision errors
+//!
+//! Even if the algorithms are the same, the results may differ slightly from the original implementation
+//! due to floating point precision.
+//!
+//! ## Unprovided features
+//!
+//! This crate is a straightforward port of Python's wordfreq,
+//! although some features are not provided:
+//!
+//! - [Tokenization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
+//! - [Additional functions](https://github.com/rspeer/wordfreq/tree/v3.0.2#other-functions)
 #![deny(missing_docs)]
 
+mod chinese;
+pub mod language;
 mod numbers;
+pub mod preprocessers;
+mod transliterate;
 
 use std::io::BufRead;
 
 use anyhow::{anyhow, Result};
 use hashbrown::HashMap;
+
+pub use preprocessers::Standardizer;
 
 /// Common type of floating numbers.
 pub type Float = f32;
@@ -75,10 +98,12 @@ pub type Float = f32;
 const FLOAT_10: Float = 10.;
 
 /// Implementation of wordfreq.
+#[derive(Clone)]
 pub struct WordFreq {
     map: HashMap<String, Float>,
     minimum: Float,
     num_handler: numbers::NumberHandler,
+    standardizer: Option<Standardizer>,
 }
 
 impl WordFreq {
@@ -106,6 +131,7 @@ impl WordFreq {
             map,
             minimum: 0.,
             num_handler: numbers::NumberHandler::new(),
+            standardizer: None,
         }
     }
 
@@ -118,6 +144,15 @@ impl WordFreq {
         }
         self.minimum = minimum;
         Ok(self)
+    }
+
+    /// Sets the standardizer for preprocessing words.
+    ///
+    /// If set, the standardizer is always applied to words before looking up their frequencies.
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn standardizer(mut self, standardizer: Standardizer) -> Self {
+        self.standardizer = Some(standardizer);
+        self
     }
 
     /// Returns the word's frequency, normalized between 0.0 and 1.0.
@@ -171,8 +206,12 @@ impl WordFreq {
     where
         W: AsRef<str>,
     {
-        let word = word.as_ref();
-        let smashed = self.num_handler.smash_numbers(word);
+        let word = self.standardizer.as_ref().map_or_else(
+            || word.as_ref().to_string(),
+            |standardizer| standardizer.apply(word.as_ref()),
+        );
+
+        let smashed = self.num_handler.smash_numbers(&word);
         let mut freq = self.map.get(&smashed).cloned()?;
 
         if smashed != word {
@@ -180,7 +219,7 @@ impl WordFreq {
             // internally replaced by 0s to aggregate their probabilities
             // together. We then assign a specific frequency to the digit
             // sequence using the `digit_freq` distribution.
-            freq *= self.num_handler.digit_freq(word);
+            freq *= self.num_handler.digit_freq(&word);
         }
 
         // All our frequency data is only precise to within 1% anyway, so round
@@ -229,6 +268,7 @@ impl WordFreq {
             map,
             minimum: 0.,
             num_handler: numbers::NumberHandler::new(),
+            standardizer: None,
         })
     }
 }
@@ -272,6 +312,16 @@ pub fn word_weights_from_text<R: BufRead>(rdr: R) -> Result<Vec<(String, Float)>
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn test_empty() {
+        let word_weights = Vec::<(&str, Float)>::new();
+        let wf = WordFreq::new(word_weights);
+        assert_relative_eq!(wf.word_frequency("las"), 0.00);
+        assert_relative_eq!(wf.word_frequency("vegas"), 0.00);
+    }
 
     #[test]
     fn test_io() {

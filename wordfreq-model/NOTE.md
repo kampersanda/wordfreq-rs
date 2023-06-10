@@ -4,7 +4,7 @@ Here we put some notes for the development of this library (especially for mysel
 
 ## Model generation
 
-Download the wordfreq repository and checkout the version 3.0.2 (if you want to reproduce our environment).
+Download the source files of wordfreq v3.0.2.
 
 ```shell
 $ wget https://zenodo.org/record/7199437/files/rspeer/wordfreq-v3.0.2.zip
