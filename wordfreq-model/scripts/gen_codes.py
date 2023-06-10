@@ -64,6 +64,8 @@ targets = [
     ('small', 'zh'),
 ]
 
+TAB = ' ' * 4
+
 #########################
 # Cargo.toml
 #########################
@@ -94,8 +96,8 @@ with open('templates/build_rs.txt', 'rt') as f:
 with open('build.rs', 'wt') as f:
     main_block = []
     for wordlist, lang in targets:
-        main_block.append(f'    #[cfg(feature = "{wordlist}-{lang}")]')
-        main_block.append(f'    build("{wordlist}_{lang}")?;')
+        main_block.append(f'{TAB}#[cfg(feature = "{wordlist}-{lang}")]')
+        main_block.append(f'{TAB}build("{wordlist}_{lang}")?;')
     f.write(build_rs.format(main_block='\n'.join(main_block)))
 
 #########################
@@ -114,13 +116,13 @@ with open('src/lib.rs', 'wt') as f:
         )
     model_kind_block = []
     for wordlist, lang in targets:
-        model_kind_block.append(f'    #[cfg(feature = "{wordlist}-{lang}")]')
-        model_kind_block.append(f'    {wordlist.capitalize()}{lang.capitalize()},')
+        model_kind_block.append(f'{TAB}#[cfg(feature = "{wordlist}-{lang}")]')
+        model_kind_block.append(f'{TAB}{wordlist.capitalize()}{lang.capitalize()},')
     match_block = []
     for wordlist, lang in targets:
-        match_block.append(f'        #[cfg(feature = "{wordlist}-{lang}")]')
+        match_block.append(f'{TAB}{TAB}#[cfg(feature = "{wordlist}-{lang}")]')
         match_block.append(
-            f'        ModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),'
+            f'{TAB}{TAB}ModelKind::{wordlist.capitalize()}{lang.capitalize()} => Ok(WordFreq::deserialize(DATA_{wordlist.upper()}_{lang.upper()})?),'
         )
     f.write(
         lib_rs.format(
