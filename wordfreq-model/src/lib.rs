@@ -40,7 +40,7 @@
 //! let wf = load_wordfreq(ModelKind::ExampleEn).unwrap();
 //! assert_relative_eq!(wf.word_frequency("las"), 0.25);
 //! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
-//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
 //! ```
 //!
 //! ## Notes
