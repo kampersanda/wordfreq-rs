@@ -30,7 +30,7 @@
 //! Even if the algorithms are the same, the results may differ slightly from the original implementation
 //! due to floating point precision.
 //!
-//! ## How to create instances from model files without wordfreq-model
+//! ## How to create instances without wordfreq-model
 //!
 //! If you do not desire automatic model downloads using [wordfreq-model](https://docs.rs/wordfreq-model/),
 //! you can create instances directly from the actual model files placed [here](https://github.com/kampersanda/wordfreq-rs/releases/tag/models-v1).
@@ -56,6 +56,28 @@
 //! let wf = WordFreq::new(word_weights);
 //! assert_relative_eq!(wf.word_frequency("las"), 0.25);
 //! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
+//! # Ok(())
+//! # }
+//! ```
+//!
+//! ## Standardization
+//!
+//! If you want to standardize words before looking up their frequencies,
+//! set up an instance of [`Standardizer`].
+//!
+//! ```
+//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
+//! use approx::assert_relative_eq;
+//! use wordfreq::WordFreq;
+//! use wordfreq::Standardizer;
+//!
+//! let word_weight_text = "las 10\nvegas 30\n";
+//! let word_weights = wordfreq::word_weights_from_text(word_weight_text.as_bytes())?;
+//!
+//! let standardizer = Standardizer::new("en")?;
+//! let wf = WordFreq::new(word_weights).standardizer(standardizer);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
 //! # Ok(())
 //! # }
 //! ```
@@ -293,6 +315,16 @@ pub fn word_weights_from_text<R: BufRead>(rdr: R) -> Result<Vec<(String, Float)>
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use approx::assert_relative_eq;
+
+    #[test]
+    fn test_empty() {
+        let word_weights = Vec::<(&str, Float)>::new();
+        let wf = WordFreq::new(word_weights);
+        assert_relative_eq!(wf.word_frequency("las"), 0.00);
+        assert_relative_eq!(wf.word_frequency("vegas"), 0.00);
+    }
 
     #[test]
     fn test_io() {
