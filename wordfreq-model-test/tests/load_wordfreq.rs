@@ -1,5 +1,3 @@
-#![cfg(test)]
-
 use wordfreq_model::load_wordfreq;
 use wordfreq_model::ModelKind;
 

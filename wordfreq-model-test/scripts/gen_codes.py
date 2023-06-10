@@ -83,10 +83,10 @@ with open('Cargo.toml', 'wt') as f:
 # src/lib.rs
 #########################
 
-with open('templates/lib_rs.txt', 'rt') as f:
+with open('templates/load_wordfreq_rs.txt', 'rt') as f:
     lib_rs = f.read()
 
-with open('src/lib.rs', 'wt') as f:
+with open('tests/load_wordfreq.rs', 'wt') as f:
     test_block = []
     for wordlist, lang in targets:
         test_block.append('#[test]')
