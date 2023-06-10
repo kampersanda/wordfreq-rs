@@ -1,34 +1,16 @@
+// Copyright 2022 Robyn Speer
+// Copyright 2023 Shunsuke Kanda
+//
+// The code is a port from https://github.com/rspeer/wordfreq/tree/v3.0.2
+// together with the comments, following the MIT-license.
 //! # wordfreq
 //!
 //! This crate is a yet another Rust port of [Python's wordfreq](https://github.com/rspeer/wordfreq),
 //! allowing you to look up the frequencies of words in many languages.
 //!
-//! Note that **this crate provides only the algorithms and does not contain the models**.
+//! Note that **this crate provides only the algorithms (including hardcoded standardization) and does not contain the models**.
 //! Use [wordfreq-model](https://docs.rs/wordfreq-model/) to easily load distributed models.
 //! We recommend to see the [documentation](https://docs.rs/wordfreq-model/) for quick start.
-//!
-//! ## Development status
-//!
-//! This aims to reproduce the behavior of the original Python implementation,
-//! but it is not yet perfect (and we do not know if we will provide everything).
-//!
-//! Features currently provided and not provided are listed below.
-//!
-//! ### Provided
-//!
-//! - [Original wordfreq models](https://github.com/rspeer/wordfreq/tree/v3.0.2#sources-and-supported-languages)
-//! - [Estimation for numbers](https://github.com/rspeer/wordfreq/tree/v3.0.2#numbers)
-//!
-//! ### Not provided
-//!
-//! - [Additional functions](https://github.com/rspeer/wordfreq/tree/v3.0.2#other-functions)
-//! - [Tokenization and normalization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
-//! - [Multi-script languages](https://github.com/rspeer/wordfreq/tree/v3.0.2#multi-script-languages)
-//!
-//! ## Precision errors
-//!
-//! Even if the algorithms are the same, the results may differ slightly from the original implementation
-//! due to floating point precision.
 //!
 //! ## How to create instances without wordfreq-model
 //!
@@ -81,6 +63,19 @@
 //! # Ok(())
 //! # }
 //! ```
+//!
+//! ## Precision errors
+//!
+//! Even if the algorithms are the same, the results may differ slightly from the original implementation
+//! due to floating point precision.
+//!
+//! ## Unprovided features
+//!
+//! This crate is a straightforward port of Python's wordfreq,
+//! although some features are not provided:
+//!
+//! - [Tokenization](https://github.com/rspeer/wordfreq/tree/v3.0.2#tokenization)
+//! - [Additional functions](https://github.com/rspeer/wordfreq/tree/v3.0.2#other-functions)
 #![deny(missing_docs)]
 
 mod chinese;
@@ -152,6 +147,8 @@ impl WordFreq {
     }
 
     /// Sets the standardizer for preprocessing words.
+    ///
+    /// If set, the standardizer is always applied to words before looking up their frequencies.
     pub fn standardizer(mut self, standardizer: Standardizer) -> Self {
         self.standardizer = Some(standardizer);
         self
