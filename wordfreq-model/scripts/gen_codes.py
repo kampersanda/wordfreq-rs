@@ -70,7 +70,7 @@ TAB = ' ' * 4
 # Cargo.toml
 #########################
 
-wordfreq_version = '0.1'
+wordfreq_version = '0.2'
 
 with open('templates/cargo_toml.txt', 'rt') as f:
     cargo_toml = f.read()
