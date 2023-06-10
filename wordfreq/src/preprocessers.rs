@@ -283,7 +283,7 @@ impl Standardizer {
         })
     }
 
-    ///
+    /// Standardizes the given text.
     pub fn apply(&self, text: &str) -> String {
         // NFC or NFKC normalization, as needed for the language
         let text = match self.normal_form {
