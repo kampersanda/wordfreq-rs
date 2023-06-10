@@ -412,4 +412,10 @@ mod tests {
             assert!(langtag.script().is_some());
         }
     }
+
+    #[test]
+    fn test_unexpected_langtag() {
+        let standardizer = Standardizer::new("hoge");
+        assert!(standardizer.is_err());
+    }
 }
