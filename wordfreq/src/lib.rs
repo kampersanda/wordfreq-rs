@@ -61,6 +61,7 @@
 //! ```
 #![deny(missing_docs)]
 
+mod chinese;
 pub mod language;
 mod numbers;
 pub mod preprocessers;
