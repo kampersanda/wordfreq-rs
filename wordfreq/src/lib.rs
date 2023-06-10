@@ -81,10 +81,12 @@ pub type Float = f32;
 const FLOAT_10: Float = 10.;
 
 /// Implementation of wordfreq.
+#[derive(Clone)]
 pub struct WordFreq {
     map: HashMap<String, Float>,
     minimum: Float,
     num_handler: numbers::NumberHandler,
+    standardizer: Option<Standardizer>,
 }
 
 impl WordFreq {
@@ -112,6 +114,7 @@ impl WordFreq {
             map,
             minimum: 0.,
             num_handler: numbers::NumberHandler::new(),
+            standardizer: None,
         }
     }
 
@@ -124,6 +127,12 @@ impl WordFreq {
         }
         self.minimum = minimum;
         Ok(self)
+    }
+
+    /// Sets the standardizer for preprocessing words.
+    pub fn standardizer(mut self, standardizer: Standardizer) -> Self {
+        self.standardizer = Some(standardizer);
+        self
     }
 
     /// Returns the word's frequency, normalized between 0.0 and 1.0.
@@ -177,8 +186,13 @@ impl WordFreq {
     where
         W: AsRef<str>,
     {
-        let word = word.as_ref();
-        let smashed = self.num_handler.smash_numbers(word);
+        let word = if let Some(standardizer) = self.standardizer.as_ref() {
+            standardizer.apply(word.as_ref())
+        } else {
+            word.as_ref().to_string()
+        };
+
+        let smashed = self.num_handler.smash_numbers(&word);
         let mut freq = self.map.get(&smashed).cloned()?;
 
         if smashed != word {
@@ -186,7 +200,7 @@ impl WordFreq {
             // internally replaced by 0s to aggregate their probabilities
             // together. We then assign a specific frequency to the digit
             // sequence using the `digit_freq` distribution.
-            freq *= self.num_handler.digit_freq(word);
+            freq *= self.num_handler.digit_freq(&word);
         }
 
         // All our frequency data is only precise to within 1% anyway, so round
@@ -235,6 +249,7 @@ impl WordFreq {
             map,
             minimum: 0.,
             num_handler: numbers::NumberHandler::new(),
+            standardizer: None,
         })
     }
 }
