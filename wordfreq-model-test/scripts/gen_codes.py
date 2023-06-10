@@ -80,7 +80,7 @@ with open('Cargo.toml', 'wt') as f:
     f.write(cargo_toml.format(features_block='\n'.join(features_block)))
 
 #########################
-# src/lib.rs
+# tests/load_wordfreq.rs
 #########################
 
 with open('templates/load_wordfreq_rs.txt', 'rt') as f:
