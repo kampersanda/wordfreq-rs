@@ -80,7 +80,7 @@ pub enum ModelKind {{
 const DATA_EXAMPLE_EN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/example_en.bin"));
 {const_block}
 
-/// Loads a pre-compiled [`WordFreq`] model.
+/// Loads a pre-compiled [`WordFreq`] model, setting up an appropriate [`Standardizer`] instance.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
     match kind {{
         ModelKind::ExampleEn => {{

@@ -330,7 +330,7 @@ const DATA_SMALL_VI: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_vi.
 #[cfg(feature = "small-zh")]
 const DATA_SMALL_ZH: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_zh.bin"));
 
-/// Loads a pre-compiled [`WordFreq`] model.
+/// Loads a pre-compiled [`WordFreq`] model, setting up an appropriate [`Standardizer`] instance.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {
     match kind {
         ModelKind::ExampleEn => {
