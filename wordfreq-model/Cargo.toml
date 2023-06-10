@@ -1,6 +1,6 @@
 [package]
 name = "wordfreq-model"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 authors = ["Shunsuke Kanda (kampersanda) <shnsk.knd@gmail.com>"]
 description = "Model loaders for wordfreq-rs"
@@ -81,12 +81,12 @@ small-zh = []
 
 [dependencies]
 anyhow = "1.0"
-wordfreq = { version = "0.1", path = "../wordfreq" }
+wordfreq = { version = "0.2", path = "../wordfreq" }
 
 [dev-dependencies]
 approx = "0.5.1"
 
 [build-dependencies]
-wordfreq = { version = "0.1", path = "../wordfreq" }
+wordfreq = { version = "0.2", path = "../wordfreq" }
 ureq = { version = "2.6.2", default-features = false, features = ["tls"] }
 zstd = "0.12"
