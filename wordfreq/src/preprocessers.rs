@@ -24,8 +24,8 @@ const LATIN_SMALL_LETTER_T_WITH_CEDILLA: &str = "ţ";
 
 #[derive(Clone)]
 enum NormalForm {
-    NFC,
-    NFKC,
+    Nfc,
+    Nfkc,
 }
 
 #[derive(Clone)]
@@ -254,7 +254,7 @@ impl Standardizer {
     ///
     /// - `language_tag`: Language tag, which should be one of left keys in [`language::LIKELY_SUBTAGS`].
     pub fn new(language_tag: &str) -> Result<Self> {
-        let language_tag = language::maximize_subtag(language_tag).ok_or(anyhow!(
+        let language_tag = language::maximize_subtag(language_tag).ok_or_else(|| anyhow!(
             "{language_tag} is an unexpected language tag. You must input a language tag defined in left keys of wordfreq::language::LIKELY_SUBTAGS."
         ))?;
         let parsed = LanguageTag::parse(language_tag).unwrap();
@@ -262,9 +262,9 @@ impl Standardizer {
         let primary_language = parsed.primary_language();
 
         let normal_form = if ["Latn", "Grek", "Cyrl"].contains(&script) {
-            NormalForm::NFC
+            NormalForm::Nfc
         } else {
-            NormalForm::NFKC
+            NormalForm::Nfkc
         };
 
         // \p{} construct in regex is used to match a Unicode character property.
@@ -311,8 +311,8 @@ impl Standardizer {
     pub fn apply(&self, text: &str) -> String {
         // NFC or NFKC normalization, as needed for the language
         let text = match self.normal_form {
-            NormalForm::NFC => text.nfc().collect::<String>(),
-            NormalForm::NFKC => text.nfkc().collect::<String>(),
+            NormalForm::Nfc => text.nfc().collect::<String>(),
+            NormalForm::Nfkc => text.nfkc().collect::<String>(),
         };
 
         // Transliteration of multi-script languages
@@ -364,7 +364,7 @@ impl Standardizer {
     /// the rest of the letters.
     fn casefold_with_i_dots(&self, text: &str) -> String {
         let text = text.nfc().collect::<String>();
-        let text = text.replace("İ", "i").replace("I", "ı");
+        let text = text.replace('İ', "i").replace('I', "ı");
         caseless::default_case_fold_str(&text)
     }
 

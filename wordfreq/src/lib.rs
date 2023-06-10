@@ -149,6 +149,7 @@ impl WordFreq {
     /// Sets the standardizer for preprocessing words.
     ///
     /// If set, the standardizer is always applied to words before looking up their frequencies.
+    #[allow(clippy::missing_const_for_fn)]
     pub fn standardizer(mut self, standardizer: Standardizer) -> Self {
         self.standardizer = Some(standardizer);
         self
@@ -205,11 +206,10 @@ impl WordFreq {
     where
         W: AsRef<str>,
     {
-        let word = if let Some(standardizer) = self.standardizer.as_ref() {
-            standardizer.apply(word.as_ref())
-        } else {
-            word.as_ref().to_string()
-        };
+        let word = self.standardizer.as_ref().map_or_else(
+            || word.as_ref().to_string(),
+            |standardizer| standardizer.apply(word.as_ref()),
+        );
 
         let smashed = self.num_handler.smash_numbers(&word);
         let mut freq = self.map.get(&smashed).cloned()?;
