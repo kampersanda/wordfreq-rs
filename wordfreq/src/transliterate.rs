@@ -1,3 +1,8 @@
+// Copyright 2022 Robyn Speer
+// Copyright 2023 Shunsuke Kanda
+//
+// The code is a port from https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/transliterate.py
+// together with the comments, following the MIT-license.
 use hashbrown::HashMap;
 
 const SR_LATN_TABLE: &[(char, &str)] = &[
@@ -225,6 +230,7 @@ pub enum Transliteration {
     AzLatn,
 }
 
+#[derive(Clone)]
 pub struct Transliterater {
     table: HashMap<char, &'static str>,
 }

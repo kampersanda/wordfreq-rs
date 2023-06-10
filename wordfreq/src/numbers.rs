@@ -1,7 +1,8 @@
 // Copyright 2022 Robyn Speer
+// Copyright 2023 Shunsuke Kanda
 //
 // The code is a port from https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/numbers.py
-// together with the comments.
+// together with the comments, following the MIT-license.
 use regex::{Captures, Regex};
 
 use crate::Float;
@@ -33,6 +34,7 @@ const FLOAT_10: Float = 10.;
 const FLOAT_0_2: Float = 0.2;
 const FLOAT_0_0083: Float = 0.0083;
 
+#[derive(Clone)]
 pub struct NumberHandler {
     digit_re: Regex,
     multi_digit_re: Regex,

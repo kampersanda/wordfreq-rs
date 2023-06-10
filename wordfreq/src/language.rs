@@ -1,6 +1,6 @@
 //! Language utilities.
 
-/// Mapping from a subtag of Language/Script/Region to the likely full form,
+/// Mappings from subtags of Language/Script/Region to their likely full forms,
 /// defined in Unicode CLDR at Release 43.
 /// The data is copied from [here](http://unicode.org/Public/cldr/43/) and provided
 /// following the [Unicode License](http://unicode.org/license.html).
@@ -8042,7 +8042,7 @@ pub const LIKELY_SUBTAGS: &[(&str, &str)] = &[
 ];
 
 /// Linear search for a likely subtag from a language subtag.
-pub(crate) fn likely_subtag_from_language(language: &str) -> Option<&str> {
+pub(crate) fn maximize_subtag(language: &str) -> Option<&str> {
     LIKELY_SUBTAGS
         .binary_search_by_key(&language, |&(k, _)| k)
         .ok()
@@ -8057,7 +8057,7 @@ mod tests {
     fn test_likely_subtag_from_language() {
         for &(lang, subtag) in LIKELY_SUBTAGS {
             println!("lang: {}, subtag: {}", lang, subtag);
-            assert_eq!(likely_subtag_from_language(lang), Some(subtag));
+            assert_eq!(maximize_subtag(lang), Some(subtag));
         }
     }
 }

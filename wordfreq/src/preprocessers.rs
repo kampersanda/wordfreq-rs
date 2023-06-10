@@ -1,5 +1,11 @@
-//! https://github.com/rspeer/wordfreq/blob/master/wordfreq/preprocess.py
-//! https://github.com/rspeer/wordfreq/blob/master/wordfreq/language_info.py
+// Copyright 2022 Robyn Speer
+// Copyright 2023 Shunsuke Kanda
+//
+// The code is a port from
+//  - https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/preprocess.py and
+//  - https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/language_info.py,
+// together with the comments, following the MIT-license.
+//! Preprocessers in multiple languages.
 
 use anyhow::{anyhow, Result};
 use language_tags::LanguageTag;
@@ -15,11 +21,13 @@ const LATIN_SMALL_LETTER_S_WITH_CEDILLA: &str = "ş";
 const LATIN_SMALL_LETTER_T_WITH_COMMA_BELOW: &str = "ț";
 const LATIN_SMALL_LETTER_T_WITH_CEDILLA: &str = "ţ";
 
+#[derive(Clone)]
 enum NormalForm {
     NFC,
     NFKC,
 }
 
+#[derive(Clone)]
 enum DiacriticsUnder {
     Cedillas,
     Commas,
@@ -213,6 +221,7 @@ enum DiacriticsUnder {
 /// We don't transliterate Traditional to Simplified Chinese in this step.
 /// There are some steps where we unify them internally: see chinese.py
 /// for more information.
+#[derive(Clone)]
 pub struct Standardizer {
     normal_form: NormalForm,
     mark_re: Option<Regex>,
@@ -222,16 +231,18 @@ pub struct Standardizer {
 }
 
 impl Standardizer {
-    /// https://github.com/rspeer/langcodes/blob/49beea8e20ae26c2dead7bd77f41cfba0e0ab533/langcodes/__init__.py#L182
+    /// Creates a new Standardizer for the given language.
     ///
-    /// https://docs.rs/language-tags/
+    /// # Arguments
     ///
-    /// 'tokenizer' and 'lookup_transliteration' are not implemented.
-    pub fn new(language: &str) -> Result<Self> {
-        let subtag = language::likely_subtag_from_language(language).ok_or(anyhow!(""))?;
-        let langtag = LanguageTag::parse(subtag).unwrap();
-        let script = langtag.script().unwrap();
-        let primary_language = langtag.primary_language();
+    /// - `language_tag`: Language tag, which should be one of left keys in [`language::LIKELY_SUBTAGS`].
+    pub fn new(language_tag: &str) -> Result<Self> {
+        let language_tag = language::maximize_subtag(language_tag).ok_or(anyhow!(
+            "{language_tag} is an unexpected language tag. You must input a language tag defined in left keys of wordfreq::language::LIKELY_SUBTAGS."
+        ))?;
+        let parsed = LanguageTag::parse(language_tag).unwrap();
+        let script = parsed.script().unwrap();
+        let primary_language = parsed.primary_language();
 
         let normal_form = if ["Latn", "Grek", "Cyrl"].contains(&script) {
             NormalForm::NFC
@@ -312,6 +323,7 @@ impl Standardizer {
             DiacriticsUnder::Commas => self.cedillas_to_commas(&text),
             DiacriticsUnder::None => text,
         };
+
         text
     }
 
