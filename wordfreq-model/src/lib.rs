@@ -40,8 +40,14 @@
 //! let wf = load_wordfreq(ModelKind::ExampleEn).unwrap();
 //! assert_relative_eq!(wf.word_frequency("las"), 0.25);
 //! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
-//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
 //! ```
+//!
+//! ## Standardization
+//!
+//! As the above example shows, the model automatically standardizes words before looking them up (i.e., `Las` is handled as `las`).
+//! This is done by an instance [`Standardizer`] set up in the [`WordFreq`] instance.
+//! [`load_wordfreq`] automatically sets up an appropriate [`Standardizer`] instance for each language.
 //!
 //! ## Notes
 //!
@@ -54,6 +60,7 @@
 use std::env;
 
 use anyhow::Result;
+use wordfreq::Standardizer;
 use wordfreq::WordFreq;
 
 /// Supported model kinds.
@@ -323,135 +330,263 @@ const DATA_SMALL_VI: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_vi.
 #[cfg(feature = "small-zh")]
 const DATA_SMALL_ZH: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/small_zh.bin"));
 
-/// Loads a pre-compiled [`WordFreq`] model.
+/// Loads a pre-compiled [`WordFreq`] model, setting up an appropriate [`Standardizer`] instance.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {
     match kind {
-        ModelKind::ExampleEn => Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?),
+        ModelKind::ExampleEn => {
+            Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?.standardizer(Standardizer::new("en")?))
+        }
         #[cfg(feature = "large-ar")]
-        ModelKind::LargeAr => Ok(WordFreq::deserialize(DATA_LARGE_AR)?),
+        ModelKind::LargeAr => {
+            Ok(WordFreq::deserialize(DATA_LARGE_AR)?.standardizer(Standardizer::new("ar")?))
+        }
         #[cfg(feature = "large-bn")]
-        ModelKind::LargeBn => Ok(WordFreq::deserialize(DATA_LARGE_BN)?),
+        ModelKind::LargeBn => {
+            Ok(WordFreq::deserialize(DATA_LARGE_BN)?.standardizer(Standardizer::new("bn")?))
+        }
         #[cfg(feature = "large-ca")]
-        ModelKind::LargeCa => Ok(WordFreq::deserialize(DATA_LARGE_CA)?),
+        ModelKind::LargeCa => {
+            Ok(WordFreq::deserialize(DATA_LARGE_CA)?.standardizer(Standardizer::new("ca")?))
+        }
         #[cfg(feature = "large-cs")]
-        ModelKind::LargeCs => Ok(WordFreq::deserialize(DATA_LARGE_CS)?),
+        ModelKind::LargeCs => {
+            Ok(WordFreq::deserialize(DATA_LARGE_CS)?.standardizer(Standardizer::new("cs")?))
+        }
         #[cfg(feature = "large-de")]
-        ModelKind::LargeDe => Ok(WordFreq::deserialize(DATA_LARGE_DE)?),
+        ModelKind::LargeDe => {
+            Ok(WordFreq::deserialize(DATA_LARGE_DE)?.standardizer(Standardizer::new("de")?))
+        }
         #[cfg(feature = "large-en")]
-        ModelKind::LargeEn => Ok(WordFreq::deserialize(DATA_LARGE_EN)?),
+        ModelKind::LargeEn => {
+            Ok(WordFreq::deserialize(DATA_LARGE_EN)?.standardizer(Standardizer::new("en")?))
+        }
         #[cfg(feature = "large-es")]
-        ModelKind::LargeEs => Ok(WordFreq::deserialize(DATA_LARGE_ES)?),
+        ModelKind::LargeEs => {
+            Ok(WordFreq::deserialize(DATA_LARGE_ES)?.standardizer(Standardizer::new("es")?))
+        }
         #[cfg(feature = "large-fi")]
-        ModelKind::LargeFi => Ok(WordFreq::deserialize(DATA_LARGE_FI)?),
+        ModelKind::LargeFi => {
+            Ok(WordFreq::deserialize(DATA_LARGE_FI)?.standardizer(Standardizer::new("fi")?))
+        }
         #[cfg(feature = "large-fr")]
-        ModelKind::LargeFr => Ok(WordFreq::deserialize(DATA_LARGE_FR)?),
+        ModelKind::LargeFr => {
+            Ok(WordFreq::deserialize(DATA_LARGE_FR)?.standardizer(Standardizer::new("fr")?))
+        }
         #[cfg(feature = "large-he")]
-        ModelKind::LargeHe => Ok(WordFreq::deserialize(DATA_LARGE_HE)?),
+        ModelKind::LargeHe => {
+            Ok(WordFreq::deserialize(DATA_LARGE_HE)?.standardizer(Standardizer::new("he")?))
+        }
         #[cfg(feature = "large-it")]
-        ModelKind::LargeIt => Ok(WordFreq::deserialize(DATA_LARGE_IT)?),
+        ModelKind::LargeIt => {
+            Ok(WordFreq::deserialize(DATA_LARGE_IT)?.standardizer(Standardizer::new("it")?))
+        }
         #[cfg(feature = "large-ja")]
-        ModelKind::LargeJa => Ok(WordFreq::deserialize(DATA_LARGE_JA)?),
+        ModelKind::LargeJa => {
+            Ok(WordFreq::deserialize(DATA_LARGE_JA)?.standardizer(Standardizer::new("ja")?))
+        }
         #[cfg(feature = "large-mk")]
-        ModelKind::LargeMk => Ok(WordFreq::deserialize(DATA_LARGE_MK)?),
+        ModelKind::LargeMk => {
+            Ok(WordFreq::deserialize(DATA_LARGE_MK)?.standardizer(Standardizer::new("mk")?))
+        }
         #[cfg(feature = "large-nb")]
-        ModelKind::LargeNb => Ok(WordFreq::deserialize(DATA_LARGE_NB)?),
+        ModelKind::LargeNb => {
+            Ok(WordFreq::deserialize(DATA_LARGE_NB)?.standardizer(Standardizer::new("nb")?))
+        }
         #[cfg(feature = "large-nl")]
-        ModelKind::LargeNl => Ok(WordFreq::deserialize(DATA_LARGE_NL)?),
+        ModelKind::LargeNl => {
+            Ok(WordFreq::deserialize(DATA_LARGE_NL)?.standardizer(Standardizer::new("nl")?))
+        }
         #[cfg(feature = "large-pl")]
-        ModelKind::LargePl => Ok(WordFreq::deserialize(DATA_LARGE_PL)?),
+        ModelKind::LargePl => {
+            Ok(WordFreq::deserialize(DATA_LARGE_PL)?.standardizer(Standardizer::new("pl")?))
+        }
         #[cfg(feature = "large-pt")]
-        ModelKind::LargePt => Ok(WordFreq::deserialize(DATA_LARGE_PT)?),
+        ModelKind::LargePt => {
+            Ok(WordFreq::deserialize(DATA_LARGE_PT)?.standardizer(Standardizer::new("pt")?))
+        }
         #[cfg(feature = "large-ru")]
-        ModelKind::LargeRu => Ok(WordFreq::deserialize(DATA_LARGE_RU)?),
+        ModelKind::LargeRu => {
+            Ok(WordFreq::deserialize(DATA_LARGE_RU)?.standardizer(Standardizer::new("ru")?))
+        }
         #[cfg(feature = "large-sv")]
-        ModelKind::LargeSv => Ok(WordFreq::deserialize(DATA_LARGE_SV)?),
+        ModelKind::LargeSv => {
+            Ok(WordFreq::deserialize(DATA_LARGE_SV)?.standardizer(Standardizer::new("sv")?))
+        }
         #[cfg(feature = "large-uk")]
-        ModelKind::LargeUk => Ok(WordFreq::deserialize(DATA_LARGE_UK)?),
+        ModelKind::LargeUk => {
+            Ok(WordFreq::deserialize(DATA_LARGE_UK)?.standardizer(Standardizer::new("uk")?))
+        }
         #[cfg(feature = "large-zh")]
-        ModelKind::LargeZh => Ok(WordFreq::deserialize(DATA_LARGE_ZH)?),
+        ModelKind::LargeZh => {
+            Ok(WordFreq::deserialize(DATA_LARGE_ZH)?.standardizer(Standardizer::new("zh")?))
+        }
         #[cfg(feature = "small-ar")]
-        ModelKind::SmallAr => Ok(WordFreq::deserialize(DATA_SMALL_AR)?),
+        ModelKind::SmallAr => {
+            Ok(WordFreq::deserialize(DATA_SMALL_AR)?.standardizer(Standardizer::new("ar")?))
+        }
         #[cfg(feature = "small-bg")]
-        ModelKind::SmallBg => Ok(WordFreq::deserialize(DATA_SMALL_BG)?),
+        ModelKind::SmallBg => {
+            Ok(WordFreq::deserialize(DATA_SMALL_BG)?.standardizer(Standardizer::new("bg")?))
+        }
         #[cfg(feature = "small-bn")]
-        ModelKind::SmallBn => Ok(WordFreq::deserialize(DATA_SMALL_BN)?),
+        ModelKind::SmallBn => {
+            Ok(WordFreq::deserialize(DATA_SMALL_BN)?.standardizer(Standardizer::new("bn")?))
+        }
         #[cfg(feature = "small-ca")]
-        ModelKind::SmallCa => Ok(WordFreq::deserialize(DATA_SMALL_CA)?),
+        ModelKind::SmallCa => {
+            Ok(WordFreq::deserialize(DATA_SMALL_CA)?.standardizer(Standardizer::new("ca")?))
+        }
         #[cfg(feature = "small-cs")]
-        ModelKind::SmallCs => Ok(WordFreq::deserialize(DATA_SMALL_CS)?),
+        ModelKind::SmallCs => {
+            Ok(WordFreq::deserialize(DATA_SMALL_CS)?.standardizer(Standardizer::new("cs")?))
+        }
         #[cfg(feature = "small-da")]
-        ModelKind::SmallDa => Ok(WordFreq::deserialize(DATA_SMALL_DA)?),
+        ModelKind::SmallDa => {
+            Ok(WordFreq::deserialize(DATA_SMALL_DA)?.standardizer(Standardizer::new("da")?))
+        }
         #[cfg(feature = "small-de")]
-        ModelKind::SmallDe => Ok(WordFreq::deserialize(DATA_SMALL_DE)?),
+        ModelKind::SmallDe => {
+            Ok(WordFreq::deserialize(DATA_SMALL_DE)?.standardizer(Standardizer::new("de")?))
+        }
         #[cfg(feature = "small-el")]
-        ModelKind::SmallEl => Ok(WordFreq::deserialize(DATA_SMALL_EL)?),
+        ModelKind::SmallEl => {
+            Ok(WordFreq::deserialize(DATA_SMALL_EL)?.standardizer(Standardizer::new("el")?))
+        }
         #[cfg(feature = "small-en")]
-        ModelKind::SmallEn => Ok(WordFreq::deserialize(DATA_SMALL_EN)?),
+        ModelKind::SmallEn => {
+            Ok(WordFreq::deserialize(DATA_SMALL_EN)?.standardizer(Standardizer::new("en")?))
+        }
         #[cfg(feature = "small-es")]
-        ModelKind::SmallEs => Ok(WordFreq::deserialize(DATA_SMALL_ES)?),
+        ModelKind::SmallEs => {
+            Ok(WordFreq::deserialize(DATA_SMALL_ES)?.standardizer(Standardizer::new("es")?))
+        }
         #[cfg(feature = "small-fa")]
-        ModelKind::SmallFa => Ok(WordFreq::deserialize(DATA_SMALL_FA)?),
+        ModelKind::SmallFa => {
+            Ok(WordFreq::deserialize(DATA_SMALL_FA)?.standardizer(Standardizer::new("fa")?))
+        }
         #[cfg(feature = "small-fi")]
-        ModelKind::SmallFi => Ok(WordFreq::deserialize(DATA_SMALL_FI)?),
+        ModelKind::SmallFi => {
+            Ok(WordFreq::deserialize(DATA_SMALL_FI)?.standardizer(Standardizer::new("fi")?))
+        }
         #[cfg(feature = "small-fil")]
-        ModelKind::SmallFil => Ok(WordFreq::deserialize(DATA_SMALL_FIL)?),
+        ModelKind::SmallFil => {
+            Ok(WordFreq::deserialize(DATA_SMALL_FIL)?.standardizer(Standardizer::new("fil")?))
+        }
         #[cfg(feature = "small-fr")]
-        ModelKind::SmallFr => Ok(WordFreq::deserialize(DATA_SMALL_FR)?),
+        ModelKind::SmallFr => {
+            Ok(WordFreq::deserialize(DATA_SMALL_FR)?.standardizer(Standardizer::new("fr")?))
+        }
         #[cfg(feature = "small-he")]
-        ModelKind::SmallHe => Ok(WordFreq::deserialize(DATA_SMALL_HE)?),
+        ModelKind::SmallHe => {
+            Ok(WordFreq::deserialize(DATA_SMALL_HE)?.standardizer(Standardizer::new("he")?))
+        }
         #[cfg(feature = "small-hi")]
-        ModelKind::SmallHi => Ok(WordFreq::deserialize(DATA_SMALL_HI)?),
+        ModelKind::SmallHi => {
+            Ok(WordFreq::deserialize(DATA_SMALL_HI)?.standardizer(Standardizer::new("hi")?))
+        }
         #[cfg(feature = "small-hu")]
-        ModelKind::SmallHu => Ok(WordFreq::deserialize(DATA_SMALL_HU)?),
+        ModelKind::SmallHu => {
+            Ok(WordFreq::deserialize(DATA_SMALL_HU)?.standardizer(Standardizer::new("hu")?))
+        }
         #[cfg(feature = "small-id")]
-        ModelKind::SmallId => Ok(WordFreq::deserialize(DATA_SMALL_ID)?),
+        ModelKind::SmallId => {
+            Ok(WordFreq::deserialize(DATA_SMALL_ID)?.standardizer(Standardizer::new("id")?))
+        }
         #[cfg(feature = "small-is")]
-        ModelKind::SmallIs => Ok(WordFreq::deserialize(DATA_SMALL_IS)?),
+        ModelKind::SmallIs => {
+            Ok(WordFreq::deserialize(DATA_SMALL_IS)?.standardizer(Standardizer::new("is")?))
+        }
         #[cfg(feature = "small-it")]
-        ModelKind::SmallIt => Ok(WordFreq::deserialize(DATA_SMALL_IT)?),
+        ModelKind::SmallIt => {
+            Ok(WordFreq::deserialize(DATA_SMALL_IT)?.standardizer(Standardizer::new("it")?))
+        }
         #[cfg(feature = "small-ja")]
-        ModelKind::SmallJa => Ok(WordFreq::deserialize(DATA_SMALL_JA)?),
+        ModelKind::SmallJa => {
+            Ok(WordFreq::deserialize(DATA_SMALL_JA)?.standardizer(Standardizer::new("ja")?))
+        }
         #[cfg(feature = "small-ko")]
-        ModelKind::SmallKo => Ok(WordFreq::deserialize(DATA_SMALL_KO)?),
+        ModelKind::SmallKo => {
+            Ok(WordFreq::deserialize(DATA_SMALL_KO)?.standardizer(Standardizer::new("ko")?))
+        }
         #[cfg(feature = "small-lt")]
-        ModelKind::SmallLt => Ok(WordFreq::deserialize(DATA_SMALL_LT)?),
+        ModelKind::SmallLt => {
+            Ok(WordFreq::deserialize(DATA_SMALL_LT)?.standardizer(Standardizer::new("lt")?))
+        }
         #[cfg(feature = "small-lv")]
-        ModelKind::SmallLv => Ok(WordFreq::deserialize(DATA_SMALL_LV)?),
+        ModelKind::SmallLv => {
+            Ok(WordFreq::deserialize(DATA_SMALL_LV)?.standardizer(Standardizer::new("lv")?))
+        }
         #[cfg(feature = "small-mk")]
-        ModelKind::SmallMk => Ok(WordFreq::deserialize(DATA_SMALL_MK)?),
+        ModelKind::SmallMk => {
+            Ok(WordFreq::deserialize(DATA_SMALL_MK)?.standardizer(Standardizer::new("mk")?))
+        }
         #[cfg(feature = "small-ms")]
-        ModelKind::SmallMs => Ok(WordFreq::deserialize(DATA_SMALL_MS)?),
+        ModelKind::SmallMs => {
+            Ok(WordFreq::deserialize(DATA_SMALL_MS)?.standardizer(Standardizer::new("ms")?))
+        }
         #[cfg(feature = "small-nb")]
-        ModelKind::SmallNb => Ok(WordFreq::deserialize(DATA_SMALL_NB)?),
+        ModelKind::SmallNb => {
+            Ok(WordFreq::deserialize(DATA_SMALL_NB)?.standardizer(Standardizer::new("nb")?))
+        }
         #[cfg(feature = "small-nl")]
-        ModelKind::SmallNl => Ok(WordFreq::deserialize(DATA_SMALL_NL)?),
+        ModelKind::SmallNl => {
+            Ok(WordFreq::deserialize(DATA_SMALL_NL)?.standardizer(Standardizer::new("nl")?))
+        }
         #[cfg(feature = "small-pl")]
-        ModelKind::SmallPl => Ok(WordFreq::deserialize(DATA_SMALL_PL)?),
+        ModelKind::SmallPl => {
+            Ok(WordFreq::deserialize(DATA_SMALL_PL)?.standardizer(Standardizer::new("pl")?))
+        }
         #[cfg(feature = "small-pt")]
-        ModelKind::SmallPt => Ok(WordFreq::deserialize(DATA_SMALL_PT)?),
+        ModelKind::SmallPt => {
+            Ok(WordFreq::deserialize(DATA_SMALL_PT)?.standardizer(Standardizer::new("pt")?))
+        }
         #[cfg(feature = "small-ro")]
-        ModelKind::SmallRo => Ok(WordFreq::deserialize(DATA_SMALL_RO)?),
+        ModelKind::SmallRo => {
+            Ok(WordFreq::deserialize(DATA_SMALL_RO)?.standardizer(Standardizer::new("ro")?))
+        }
         #[cfg(feature = "small-ru")]
-        ModelKind::SmallRu => Ok(WordFreq::deserialize(DATA_SMALL_RU)?),
+        ModelKind::SmallRu => {
+            Ok(WordFreq::deserialize(DATA_SMALL_RU)?.standardizer(Standardizer::new("ru")?))
+        }
         #[cfg(feature = "small-sh")]
-        ModelKind::SmallSh => Ok(WordFreq::deserialize(DATA_SMALL_SH)?),
+        ModelKind::SmallSh => {
+            Ok(WordFreq::deserialize(DATA_SMALL_SH)?.standardizer(Standardizer::new("sh")?))
+        }
         #[cfg(feature = "small-sk")]
-        ModelKind::SmallSk => Ok(WordFreq::deserialize(DATA_SMALL_SK)?),
+        ModelKind::SmallSk => {
+            Ok(WordFreq::deserialize(DATA_SMALL_SK)?.standardizer(Standardizer::new("sk")?))
+        }
         #[cfg(feature = "small-sl")]
-        ModelKind::SmallSl => Ok(WordFreq::deserialize(DATA_SMALL_SL)?),
+        ModelKind::SmallSl => {
+            Ok(WordFreq::deserialize(DATA_SMALL_SL)?.standardizer(Standardizer::new("sl")?))
+        }
         #[cfg(feature = "small-sv")]
-        ModelKind::SmallSv => Ok(WordFreq::deserialize(DATA_SMALL_SV)?),
+        ModelKind::SmallSv => {
+            Ok(WordFreq::deserialize(DATA_SMALL_SV)?.standardizer(Standardizer::new("sv")?))
+        }
         #[cfg(feature = "small-ta")]
-        ModelKind::SmallTa => Ok(WordFreq::deserialize(DATA_SMALL_TA)?),
+        ModelKind::SmallTa => {
+            Ok(WordFreq::deserialize(DATA_SMALL_TA)?.standardizer(Standardizer::new("ta")?))
+        }
         #[cfg(feature = "small-tr")]
-        ModelKind::SmallTr => Ok(WordFreq::deserialize(DATA_SMALL_TR)?),
+        ModelKind::SmallTr => {
+            Ok(WordFreq::deserialize(DATA_SMALL_TR)?.standardizer(Standardizer::new("tr")?))
+        }
         #[cfg(feature = "small-uk")]
-        ModelKind::SmallUk => Ok(WordFreq::deserialize(DATA_SMALL_UK)?),
+        ModelKind::SmallUk => {
+            Ok(WordFreq::deserialize(DATA_SMALL_UK)?.standardizer(Standardizer::new("uk")?))
+        }
         #[cfg(feature = "small-ur")]
-        ModelKind::SmallUr => Ok(WordFreq::deserialize(DATA_SMALL_UR)?),
+        ModelKind::SmallUr => {
+            Ok(WordFreq::deserialize(DATA_SMALL_UR)?.standardizer(Standardizer::new("ur")?))
+        }
         #[cfg(feature = "small-vi")]
-        ModelKind::SmallVi => Ok(WordFreq::deserialize(DATA_SMALL_VI)?),
+        ModelKind::SmallVi => {
+            Ok(WordFreq::deserialize(DATA_SMALL_VI)?.standardizer(Standardizer::new("vi")?))
+        }
         #[cfg(feature = "small-zh")]
-        ModelKind::SmallZh => Ok(WordFreq::deserialize(DATA_SMALL_ZH)?),
+        ModelKind::SmallZh => {
+            Ok(WordFreq::deserialize(DATA_SMALL_ZH)?.standardizer(Standardizer::new("zh")?))
+        }
     }
 }

@@ -1,0 +1,4 @@
+use wordfreq_model::load_wordfreq;
+use wordfreq_model::ModelKind;
+
+{test_block}

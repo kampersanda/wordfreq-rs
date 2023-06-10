@@ -40,8 +40,14 @@
 //! let wf = load_wordfreq(ModelKind::ExampleEn).unwrap();
 //! assert_relative_eq!(wf.word_frequency("las"), 0.25);
 //! assert_relative_eq!(wf.word_frequency("vegas"), 0.75);
-//! assert_relative_eq!(wf.word_frequency("Las"), 0.00);
+//! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
 //! ```
+//!
+//! ## Standardization
+//!
+//! As the above example shows, the model automatically standardizes words before looking them up (i.e., `Las` is handled as `las`).
+//! This is done by an instance [`Standardizer`] set up in the [`WordFreq`] instance.
+//! [`load_wordfreq`] automatically sets up an appropriate [`Standardizer`] instance for each language.
 //!
 //! ## Notes
 //!
@@ -54,6 +60,7 @@
 use std::env;
 
 use anyhow::Result;
+use wordfreq::Standardizer;
 use wordfreq::WordFreq;
 
 /// Supported model kinds.
@@ -73,10 +80,12 @@ pub enum ModelKind {{
 const DATA_EXAMPLE_EN: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/example_en.bin"));
 {const_block}
 
-/// Loads a pre-compiled [`WordFreq`] model.
+/// Loads a pre-compiled [`WordFreq`] model, setting up an appropriate [`Standardizer`] instance.
 pub fn load_wordfreq(kind: ModelKind) -> Result<WordFreq> {{
     match kind {{
-        ModelKind::ExampleEn => Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?),
+        ModelKind::ExampleEn => {{
+            Ok(WordFreq::deserialize(DATA_EXAMPLE_EN)?.standardizer(Standardizer::new("en")?))
+        }}
 {match_block}
     }}
 }}
