@@ -43,6 +43,12 @@
 //! assert_relative_eq!(wf.word_frequency("Las"), 0.25); // Standardized
 //! ```
 //!
+//! ## Standardization
+//!
+//! As the above example shows, the model automatically standardizes words before looking them up (i.e., `Las` is handled as `las`).
+//! This is done by an instance [`Standardizer`] set up in the [`WordFreq`] instance.
+//! [`load_wordfreq`] automatically sets up an appropriate [`Standardizer`] instance for each language.
+//!
 //! ## Notes
 //!
 //! This crate downloads specified model files and embeds the models directly into the source code.
