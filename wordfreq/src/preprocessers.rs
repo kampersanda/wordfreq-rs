@@ -35,7 +35,7 @@ enum DiacriticsUnder {
     None,
 }
 
-/// This function applies pre-processing steps that convert forms of words
+/// This class provides pre-processing steps that convert forms of words
 /// considered equivalent into one standardized form.
 ///
 /// As one straightforward step, it case-folds the text. For the purposes of
@@ -219,9 +219,24 @@ enum DiacriticsUnder {
 /// assert_eq!(standardizer.apply("бағырты"), "bağırtı");
 /// ```
 ///
-/// We don't transliterate Traditional to Simplified Chinese in this step.
-/// There are some steps where we unify them internally: see chinese.py
-/// for more information.
+/// In Chinese, there is a transliteration step from traditional characters to simplified ones.
+///
+/// ```
+/// use wordfreq::Standardizer;
+/// let standardizer = Standardizer::new("zh").unwrap();
+/// assert_eq!(standardizer.apply("愛情"), "爱情");
+/// ```
+///
+/// # Differences from the original Python's implementation
+///
+/// This class is a straightforward port of `preprocess_text` in [wordfreq/preprocess.py](https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/preprocess.py),
+/// but differs in the following:
+///
+/// - **Chinese transliteration step:**
+///   The original implementation performs this step during tokenization, but ours supports it in this class,
+///   because our library does not support tokenization.
+/// - **Language tag parsing:**
+///   Our implementation employs a simple approach to parse language tags, just looking up [`language::LIKELY_SUBTAGS`].
 #[derive(Clone)]
 pub struct Standardizer {
     normal_form: NormalForm,
@@ -276,7 +291,7 @@ impl Standardizer {
             None
         };
 
-        let chinese_simplifier = if "zh" == primary_language && "Hant" == script {
+        let chinese_simplifier = if "zh" == primary_language && "Hant" != script {
             Some(ChineseSimplifier::new())
         } else {
             None
