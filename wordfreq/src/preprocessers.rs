@@ -12,6 +12,7 @@ use language_tags::LanguageTag;
 use regex::Regex;
 use unicode_normalization::UnicodeNormalization;
 
+use crate::chinese::ChineseSimplifier;
 use crate::language;
 use crate::transliterate::Transliterater;
 use crate::transliterate::Transliteration;
@@ -228,6 +229,7 @@ pub struct Standardizer {
     dotless_i: bool,
     diacritics_under: DiacriticsUnder,
     transliterater: Option<Transliterater>,
+    chinese_simplifier: Option<ChineseSimplifier>,
 }
 
 impl Standardizer {
@@ -266,10 +268,16 @@ impl Standardizer {
             (false, DiacriticsUnder::None)
         };
 
-        let transliterater = if ["sr"].contains(&primary_language) {
+        let transliterater = if "sr" == primary_language {
             Some(Transliterater::new(Transliteration::SrLatn))
-        } else if ["az"].contains(&primary_language) {
+        } else if "az" == primary_language {
             Some(Transliterater::new(Transliteration::AzLatn))
+        } else {
+            None
+        };
+
+        let chinese_simplifier = if "zh" == primary_language && "Hant" == script {
+            Some(ChineseSimplifier::new())
         } else {
             None
         };
@@ -280,6 +288,7 @@ impl Standardizer {
             dotless_i,
             diacritics_under,
             transliterater,
+            chinese_simplifier,
         })
     }
 
@@ -322,6 +331,14 @@ impl Standardizer {
             DiacriticsUnder::Cedillas => self.commas_to_cedillas(&text),
             DiacriticsUnder::Commas => self.cedillas_to_commas(&text),
             DiacriticsUnder::None => text,
+        };
+
+        // Simplyfing Chinese characters
+        // NOTE: This step is from lossy_tokenize() in https://github.com/rspeer/wordfreq/blob/v3.0.2/wordfreq/tokens.py.
+        let text = if let Some(chinese_simplifier) = self.chinese_simplifier.as_ref() {
+            chinese_simplifier.simplify(&text)
+        } else {
+            text
         };
 
         text
