@@ -18,7 +18,7 @@
 //! # Cargo.toml
 //!
 //! [dependencies.wordfreq-model]
-//! version = "0.1"
+//! version = "0.2"
 //! features = ["large-en", "small-ja"]
 //! ```
 //!
