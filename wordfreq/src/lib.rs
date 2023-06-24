@@ -273,7 +273,7 @@ impl WordFreq {
     }
 
     /// Returns the reference to the internal word-frequency map.
-    pub fn word_frequency_map(&self) -> &HashMap<String, Float> {
+    pub const fn word_frequency_map(&self) -> &HashMap<String, Float> {
         &self.map
     }
 }
