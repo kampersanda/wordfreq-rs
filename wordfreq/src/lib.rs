@@ -271,6 +271,11 @@ impl WordFreq {
             standardizer: None,
         })
     }
+
+    /// Returns the reference to the internal word-frequency map.
+    pub const fn word_frequency_map(&self) -> &HashMap<String, Float> {
+        &self.map
+    }
 }
 
 /// Parses pairs of a word and its weight from a text file,
